@@ -1,0 +1,12 @@
+$theme-colors: ("primary": #ff0000,
+    "dark": #000000);
+
+$border-width: (5px);
+
+$list-group-bg: ('background-color: #000000');
+$list-group-item-padding-y: (0.2rem);
+$list-group-item-padding-x: (0.2rem);
+
+$container-max-widths: (xl: 1400px);
+
+@import '../../../node_modules/bootstrap/scss/bootstrap.scss';

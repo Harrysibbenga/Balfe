@@ -1,30 +1,118 @@
 import Vue from "vue";
-import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import Router from "vue-router";
+import firebase from "firebase";
 
-Vue.use(VueRouter);
+import Home from "@/components/Home/index";
+import Login from "@/components/Login/index";
+import NotFound from "@/components/404/index";
+import Post from "@/components/Post/index"
+// Dashboard
+import Dashboard from "@/components/Dashboard/index";
+import MainDashboard from "@/components/Dashboard/welcome";
+// Posts
+import AddPost from "@/components/Dashboard/Posts/addPost";
+import ListPosts from "@/components/Dashboard/Posts/listPosts";
+//Partners
+import AddPartners from '@/components/Dashboard/Partners/addPartner';
+import ListPartners from '@/components/Dashboard/Partners/listPartners';
+//Media
+import Media from '@/components/Dashboard/Media/index'
+import Gallery from "@/components/Dashboard/Media/Gallery/index"
+import Logos from "@/components/Dashboard/Media/Logos/index"
+import Videos from "@/components/Dashboard/Media/Videos/index"
+import Images from "@/components/Dashboard/Media/Images/index"
+//Drivers
+import Drivers from "@/components/Dashboard/Drivers/index";
+//Calender
+import Calender from "@/components/Dashboard/Calender/index"
+Vue.use(Router);
 
-const routes = [
-  {
-    path: "/",
-    name: "Home",
-    component: Home
-  },
-  {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
-  }
-];
-
-const router = new VueRouter({
+const router = new Router({
   mode: "history",
-  base: process.env.BASE_URL,
-  routes
+  routes: [{
+      path: "*",
+      component: NotFound
+    },
+    {
+      path: "/",
+      name: "home",
+      component: Home
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: Login
+    }, {
+      path: '/post/:id',
+      name: 'post',
+      component: Post
+    }, {
+      path: "/dashboard",
+      name: "dashboard",
+      component: Dashboard,
+      children: [{
+          path: "/",
+          component: MainDashboard
+        },
+        {
+          path: "add_posts",
+          component: AddPost
+        },
+        {
+          path: "list_posts",
+          component: ListPosts
+        },
+        {
+          path: "add_partners",
+          component: AddPartners
+        }, {
+          path: "list_partners",
+          component: ListPartners
+        }, {
+          path: "drivers",
+          component: Drivers
+        }, {
+          path: "calender",
+          component: Calender
+        }, {
+          path: "media",
+          name: "media",
+          component: Media,
+          children: [{
+              path: "/",
+              component: Gallery
+            }, {
+              path: "images",
+              component: Images
+            }, {
+              path: "videos",
+              component: Videos
+            },
+            {
+              path: "logos",
+              component: Logos
+            }
+          ]
+        }
+      ],
+      meta: {
+        requiresAuth: true
+      }
+    }
+  ]
+});
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
+  const currentUser = firebase.auth().currentUser;
+
+  if (requiresAuth && !currentUser) {
+    next("/login");
+  } else if (requiresAuth && currentUser) {
+    next();
+  } else {
+    next();
+  }
 });
 
 export default router;
