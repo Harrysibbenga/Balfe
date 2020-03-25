@@ -123,7 +123,9 @@ export default {
         .then(doc => {
           this.track.trackInfo = doc.data();
         })
-        .catch(err => {});
+        .catch(err => {
+          log(err);
+        });
     },
     deleteRound(round) {
       fb.calenderRounds.doc(round.id).delete();
