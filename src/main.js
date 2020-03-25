@@ -27,8 +27,8 @@ Vue.config.devtools = false;
 
 // handle page reloads
 let app;
-fb.auth.onAuthStateChanged(() => {
-  if (!app) {
+fb.auth.onAuthStateChanged((user) => {
+  if (!user) {
     app = new Vue({
       el: "#app",
       router,
