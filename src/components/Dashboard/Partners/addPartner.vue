@@ -91,7 +91,6 @@ export default {
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
           uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
             this.partner.logo = downloadURL;
-            console.log("File available at", downloadURL);
             fb.logosCollection
               .add({
                 name: file.name,
@@ -101,9 +100,7 @@ export default {
               .then(() => {
                 this.performingRequest = false;
               })
-              .catch(err => {
-                console.log(err);
-              });
+              .catch(error => alert(error.message));
           });
         }
       );

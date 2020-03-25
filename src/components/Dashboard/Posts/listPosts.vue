@@ -175,7 +175,6 @@ export default {
   methods: {
     deletePost(post) {
       this.toDelete = post;
-      console.log(this.posts);
       this.deleteDialog = true;
     },
     deleteOnCancel() {
@@ -186,12 +185,7 @@ export default {
       fb.postsCollection
         .doc(this.toDelete.id)
         .delete()
-        .then(function() {
-          console.log("Document successfully deleted!");
-        })
-        .catch(function(error) {
-          console.error("Error removing document: ", error);
-        });
+        .catch(error => alert(error.message));
     },
     editPost(post) {
       this.toEdit = post;
@@ -230,9 +224,7 @@ export default {
           this.currentPost = {};
           this.newImage = false;
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch(error => alert(error.message));
     },
     uploadImage(event) {
       let file = event.target.files[0];
@@ -254,7 +246,7 @@ export default {
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
           uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
             this.post.image = downloadURL;
-            console.log("File available at", downloadURL);
+
             fb.imageUrlCollection
               .add({
                 name: file.name,
@@ -264,9 +256,7 @@ export default {
               .then(() => {
                 this.performingRequest = false;
               })
-              .catch(err => {
-                console.log(err);
-              });
+              .catch(error => alert(error.message));
           });
         }
       );
@@ -281,9 +271,7 @@ export default {
             this.selectImage.selectedUrl = image.url;
             this.post.image = image.url;
           })
-          .catch(err => {
-            console.log(err);
-          });
+          .catch(error => alert(error.message));
       }
     }
   },

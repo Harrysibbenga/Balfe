@@ -114,7 +114,7 @@ export default {
           this.track.date = "";
           this.track.number = "";
         })
-        .catch(err => {});
+        .catch(error => alert(error.message));
     },
     selectOption(id) {
       fb.tracksCollection
@@ -123,9 +123,7 @@ export default {
         .then(doc => {
           this.track.trackInfo = doc.data();
         })
-        .catch(err => {
-          log(err);
-        });
+        .catch(error => alert(error.message));
     },
     deleteRound(round) {
       fb.calenderRounds.doc(round.id).delete();

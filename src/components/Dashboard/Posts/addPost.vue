@@ -159,9 +159,7 @@ export default {
             this.postAdded = null;
           }, 3000);
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch(error => alert(error.message));
     },
     submitHandler() {
       if (!this.$v.$invalid) {
@@ -199,7 +197,6 @@ export default {
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
           uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
             this.post.image = downloadURL;
-            console.log("File available at", downloadURL);
             fb.imageUrlCollection
               .add({
                 name: file.name,
@@ -209,9 +206,7 @@ export default {
               .then(() => {
                 this.performingRequest = false;
               })
-              .catch(err => {
-                console.log(err);
-              });
+              .catch(error => alert(error.message));
           });
         }
       );

@@ -240,7 +240,7 @@ export default {
               this.driverAdded = null;
             }, 3000);
         })
-        .catch(err => {});
+        .catch(error => alert(error.message));
     },
     submitHandler() {
       if (this.driver.firstName === "" || this.driver.secondName === "") {
@@ -274,7 +274,6 @@ export default {
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
           uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
             this.driver.image = downloadURL;
-            console.log("File available at", downloadURL);
             fb.imageUrlCollection
               .add({
                 name: file.name,
@@ -284,7 +283,7 @@ export default {
               .then(() => {
                 this.performingRequest = false;
               })
-              .catch(err => {});
+              .catch(error => alert(error.message));
           });
         }
       );
@@ -348,7 +347,7 @@ export default {
           this.driver.firstName = "";
           this.driver.secondName = "";
         })
-        .catch(err => {});
+        .catch(error => alert(error.message));
     },
     selectOption(id) {
       if (id) {
@@ -360,7 +359,7 @@ export default {
             this.selectImage.selectedUrl = image.url;
             this.driver.image = image.url;
           })
-          .catch(err => {});
+          .catch(error => alert(error.message));
       }
     }
   },

@@ -190,9 +190,7 @@ export default {
           this.currentPartner = {};
           this.newImage = false;
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch(error => alert(error.message));
     },
     uploadImage(event) {
       let file = event.target.files[0];
@@ -214,7 +212,6 @@ export default {
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
           uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
             this.partner.image = downloadURL;
-            console.log("File available at", downloadURL);
             fb.logosCollection
               .add({
                 name: file.name,
@@ -224,9 +221,7 @@ export default {
               .then(() => {
                 this.performingRequest = false;
               })
-              .catch(err => {
-                console.log(err);
-              });
+              .catch(error => alert(error.message));
           });
         }
       );
@@ -241,9 +236,7 @@ export default {
             this.selectImage.selectedUrl = image.url;
             this.partner.image = image.url;
           })
-          .catch(err => {
-            console.log(err);
-          });
+          .catch(error => alert(error.message));
       }
     }
   },
