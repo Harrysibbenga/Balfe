@@ -5,10 +5,20 @@
     <b-form @submit.prevent="submitHandler">
       <img :src="post.image" class="img-fluid" />
       <div class="input_field">
-        <input type="file" @change="uploadImage" ref="fileInput" accept="image/*" />
+        <input
+          type="file"
+          @change="uploadImage"
+          ref="fileInput"
+          accept="image/*"
+        />
       </div>
 
-      <b-form-group id="title" label="Title" label-for="title" class="text-left">
+      <b-form-group
+        id="title"
+        label="Title"
+        label-for="title"
+        class="text-left"
+      >
         <b-input
           id="title"
           v-model.trim="post.title"
@@ -19,14 +29,20 @@
           v-model="post.title"
           @blur="$v.post.title.$touch()"
         ></b-input>
-        <p class="error-label" v-if="$v.post.title.$error">This input is required</p>
-        <p
-          class="error-label"
-          v-if="!$v.post.title.maxLength"
-        >Maximum of {{ $v.post.title.$params.maxLength.max }} characters</p>
+        <p class="error-label" v-if="$v.post.title.$error">
+          This input is required
+        </p>
+        <p class="error-label" v-if="!$v.post.title.maxLength">
+          Maximum of {{ $v.post.title.$params.maxLength.max }} characters
+        </p>
       </b-form-group>
 
-      <b-form-group id="excerpt" label="Excerpt" label-for="excerpt" class="text-left">
+      <b-form-group
+        id="excerpt"
+        label="Excerpt"
+        label-for="excerpt"
+        class="text-left"
+      >
         <b-input
           id="excerpt"
           v-model.trim="post.excerpt"
@@ -37,23 +53,36 @@
           v-model="post.excerpt"
           @blur="$v.post.excerpt.$touch()"
         ></b-input>
-        <p class="error-label" v-if="$v.post.excerpt.$error">This input is required</p>
-        <p
-          class="error-label"
-          v-if="!$v.post.excerpt.maxLength"
-        >Maximum of {{ $v.post.excerpt.$params.maxLength.max }} characters</p>
+        <p class="error-label" v-if="$v.post.excerpt.$error">
+          This input is required
+        </p>
+        <p class="error-label" v-if="!$v.post.excerpt.maxLength">
+          Maximum of {{ $v.post.excerpt.$params.maxLength.max }} characters
+        </p>
       </b-form-group>
 
-      <b-form-group id="content" label="Content" label-for="content" class="text-left">
+      <b-form-group
+        id="content"
+        label="Content"
+        label-for="content"
+        class="text-left"
+      >
         <wysiwyg id="content" v-model="post.content"></wysiwyg>
       </b-form-group>
 
       <b-form-group id="date" label="Date" label-for="date" class="text-left">
-        <datepicker id="date" v-model="post.date" @blur="$v.post.date.$touch()" required></datepicker>
+        <datepicker
+          id="date"
+          v-model="post.date"
+          @blur="$v.post.date.$touch()"
+          required
+        ></datepicker>
         <p class="error-label" v-if="$v.post.date.$error">Date required</p>
       </b-form-group>
 
-      <b-button type="submit" :disabled="post.title == ''" variant="primary">Add post</b-button>
+      <b-button type="submit" :disabled="post.title == ''" variant="primary"
+        >Add post</b-button
+      >
     </b-form>
 
     <b-modal v-model="dialog" hide-footer hide-header centered>
@@ -72,7 +101,7 @@
 
 <script>
 import { required, maxLength } from "vuelidate/lib/validators";
-const fb = require("../../../../balfeconfig/firebaseConfig.js");
+const fb = require("../../../firebaseConfig");
 
 export default {
   data() {

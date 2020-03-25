@@ -63,7 +63,7 @@
 
 <script>
 import { required, email, minLength } from "vuelidate/lib/validators";
-const fb = require("../../../balfeconfig/firebaseConfig");
+const fb = require("../../firebaseConfig");
 export default {
   data() {
     return {

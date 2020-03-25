@@ -187,7 +187,7 @@
 <script>
 import { mapState } from "vuex";
 import moment from "moment";
-const fb = require("../../../../balfeconfig/firebaseConfig.js");
+const fb = require("../../../firebaseConfig");
 
 export default {
   data() {

@@ -20,7 +20,12 @@
             </td>
             <td>{{ image.createdOn | formatCreation }}</td>
             <td>
-              <div class="d-inline px-1 text-primary" @click="deleteImage(image)">Delete</div>
+              <div
+                class="d-inline px-1 text-primary"
+                @click="deleteImage(image)"
+              >
+                Delete
+              </div>
             </td>
           </tr>
         </tbody>
@@ -29,11 +34,16 @@
     <div v-else>Sorry no images yet .......... Add some!</div>
     <b-modal v-model="deleteDialog" hide-footer hide-header centered>
       <div class="d-block text-center">
-        <p>Are you sure you want to delete this image ? ( be sure to change the posts with this image )</p>
+        <p>
+          Are you sure you want to delete this image ? ( be sure to change the
+          posts with this image )
+        </p>
       </div>
       <div class="d-block text-right pt-3">
         <b-button class="mr-2" @click="deleteOnConfirm">Yes, delete</b-button>
-        <b-button variant="primary" @click="deleteOnCancel">No, do not delete it</b-button>
+        <b-button variant="primary" @click="deleteOnCancel"
+          >No, do not delete it</b-button
+        >
       </div>
     </b-modal>
   </div>
@@ -42,7 +52,7 @@
 <script>
 import { mapState } from "vuex";
 import moment from "moment";
-const fb = require("../../../../../balfeconfig/firebaseConfig.js");
+const fb = require("../../../../firebaseConfig");
 
 export default {
   data() {

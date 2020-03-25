@@ -26,7 +26,7 @@
 
 <script>
 import { mapState } from "vuex";
-const fb = require("../../../balfeconfig/firebaseConfig.js");
+const fb = require("../../firebaseConfig");
 
 export default {
   computed: {

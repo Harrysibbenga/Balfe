@@ -24,8 +24,12 @@
             <td>{{ post.date | formatDate }}</td>
             <td>{{ post.createdOn | formatCreation }}</td>
             <td>
-              <div class="d-inline px-1 text-dark" @click="editPost(post)">Edit</div>
-              <div class="d-inline px-1 text-primary" @click="deletePost(post)">Delete</div>
+              <div class="d-inline px-1 text-dark" @click="editPost(post)">
+                Edit
+              </div>
+              <div class="d-inline px-1 text-primary" @click="deletePost(post)">
+                Delete
+              </div>
             </td>
           </tr>
         </tbody>
@@ -34,11 +38,16 @@
     <div v-else>Sorry no posts yet .......... Add some!</div>
     <b-modal v-model="deleteDialog" hide-footer hide-header centered>
       <div class="d-block text-center">
-        <p>Are you sure you want to delete this post ? ( there's no turning back )</p>
+        <p>
+          Are you sure you want to delete this post ? ( there's no turning back
+          )
+        </p>
       </div>
       <div class="d-block text-right pt-3">
         <b-button class="mr-2" @click="deleteOnConfirm">Yes, delete</b-button>
-        <b-button variant="primary" @click="deleteOnCancel">No, do not delete it</b-button>
+        <b-button variant="primary" @click="deleteOnCancel"
+          >No, do not delete it</b-button
+        >
       </div>
     </b-modal>
 
@@ -57,7 +66,12 @@
           <img :src="post.image" v-if="newImage" class="img-fluid" />
         </div>
         <div class="input_field">
-          <input type="file" @change="uploadImage" ref="fileInput" accept="image/*" />
+          <input
+            type="file"
+            @change="uploadImage"
+            ref="fileInput"
+            accept="image/*"
+          />
         </div>
         <b-form-select
           v-model="selectImage.selected"
@@ -67,10 +81,17 @@
           @change="selectOption"
         >
           <template v-slot:first>
-            <b-form-select-option :value="null" disabled>-- Please select an option --</b-form-select-option>
+            <b-form-select-option :value="null" disabled
+              >-- Please select an option --</b-form-select-option
+            >
           </template>
         </b-form-select>
-        <b-form-group id="title" label="Title" label-for="title" class="text-left">
+        <b-form-group
+          id="title"
+          label="Title"
+          label-for="title"
+          class="text-left"
+        >
           <b-input
             id="title"
             v-model.trim="post.title"
@@ -79,7 +100,12 @@
           ></b-input>
         </b-form-group>
 
-        <b-form-group id="excerpt" label="Excerpt" label-for="excerpt" class="text-left">
+        <b-form-group
+          id="excerpt"
+          label="Excerpt"
+          label-for="excerpt"
+          class="text-left"
+        >
           <b-input
             id="excerpt"
             v-model.trim="post.excerpt"
@@ -88,12 +114,23 @@
           ></b-input>
         </b-form-group>
 
-        <b-form-group id="content" label="Content" label-for="content" class="text-left">
-          <wysiwyg id="content" v-model="post.content">{{ currentPost.content }}</wysiwyg>
+        <b-form-group
+          id="content"
+          label="Content"
+          label-for="content"
+          class="text-left"
+        >
+          <wysiwyg id="content" v-model="post.content">{{
+            currentPost.content
+          }}</wysiwyg>
         </b-form-group>
 
         <b-form-group id="date" label="Date" label-for="date" class="text-left">
-          <datepicker id="date" v-model="post.date" :value="currentPost.date"></datepicker>
+          <datepicker
+            id="date"
+            v-model="post.date"
+            :value="currentPost.date"
+          ></datepicker>
         </b-form-group>
       </b-form>
       <div class="d-block text-right pt-3">
@@ -107,7 +144,7 @@
 <script>
 import { mapState } from "vuex";
 import moment from "moment";
-const fb = require("../../../../balfeconfig/firebaseConfig.js");
+const fb = require("../../../firebaseConfig");
 
 export default {
   data() {

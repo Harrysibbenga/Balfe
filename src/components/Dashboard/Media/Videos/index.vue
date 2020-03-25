@@ -20,7 +20,12 @@
             </td>
             <td>{{ video.createdOn | formatCreation }}</td>
             <td>
-              <div class="d-inline px-1 text-primary" @click="deleteVideo(video)">Delete</div>
+              <div
+                class="d-inline px-1 text-primary"
+                @click="deleteVideo(video)"
+              >
+                Delete
+              </div>
             </td>
           </tr>
         </tbody>
@@ -33,7 +38,9 @@
       </div>
       <div class="d-block text-right pt-3">
         <b-button class="mr-2" @click="deleteOnConfirm">Yes, delete</b-button>
-        <b-button variant="primary" @click="deleteOnCancel">No, do not delete it</b-button>
+        <b-button variant="primary" @click="deleteOnCancel"
+          >No, do not delete it</b-button
+        >
       </div>
     </b-modal>
   </div>
@@ -42,7 +49,7 @@
 <script>
 import { mapState } from "vuex";
 import moment from "moment";
-const fb = require("../../../../../balfeconfig/firebaseConfig.js");
+const fb = require("../../../../firebaseConfig");
 
 export default {
   data() {

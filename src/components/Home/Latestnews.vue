@@ -1,9 +1,12 @@
 <template>
-  <div id="news-sec" class="py-5 border-top border-bottom border-primary bg-white text-dark">
+  <div
+    id="news-sec"
+    class="py-5 border-top border-bottom border-primary bg-white text-dark"
+  >
     <h2 class="pl-3 pb-5 font-weight-bold">Latest News</h2>
     <div class="container-lg">
       <div class="row">
-        <div class="col-md-4" v-for="(post,index) in latestPosts" :key="index">
+        <div class="col-md-4" v-for="(post, index) in latestPosts" :key="index">
           <img class="img-fluid" :src="post.image" />
           <div class="text-container">
             <h4 class="h5 py-2 text-center">{{ post.title }}</h4>
@@ -12,7 +15,12 @@
             <div class="container-fluid p-0 mb-5">
               <div class="row">
                 <div class="col-md-6">
-                  <app-button type="link" :linkTo="`/post/${post.id}`" :addClass="['btn-md']">View</app-button>
+                  <app-button
+                    type="link"
+                    :linkTo="`/post/${post.id}`"
+                    :addClass="['btn-md']"
+                    >View</app-button
+                  >
                 </div>
               </div>
             </div>
@@ -25,7 +33,7 @@
 
 <script>
 import moment from "moment";
-const fb = require("../../../balfeconfig/firebaseConfig");
+const fb = require("../../firebaseConfig");
 
 export default {
   data() {

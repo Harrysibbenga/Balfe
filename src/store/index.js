@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-const fb = require("../../balfeconfig/firebaseConfig.js");
+const fb = require("../firebaseConfig");
 
 Vue.use(Vuex);
 

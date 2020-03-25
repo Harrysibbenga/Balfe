@@ -51,7 +51,7 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
-const fb = require("../../../../balfeconfig/firebaseConfig.js");
+const fb = require("../../../firebaseConfig");
 
 export default {
   data() {
