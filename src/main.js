@@ -11,7 +11,7 @@ import vuelidate from "vuelidate";
 import wysiwyg from "vue-wysiwyg";
 import Datepicker from "vuejs-datepicker";
 
-const fb = require("../balfeconfig/firebaseConfig");
+const fb = require("./firebaseConfig");
 
 // Components
 import Button from "./components/UI/Button";
@@ -23,6 +23,7 @@ Vue.use(vuelidate);
 Vue.use(wysiwyg, {});
 
 Vue.config.productionTip = false;
+Vue.config.devtools = false;
 
 // handle page reloads
 let app;
