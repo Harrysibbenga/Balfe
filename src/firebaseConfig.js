@@ -9,7 +9,7 @@ const {
     measurementId,
     appId,
     messagingSenderId
-} = require('./config');
+} = require('../config');
 // firebase init goes here
 const config = {
     apiKey: apiKey,
