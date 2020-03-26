@@ -8,6 +8,8 @@ Vue.use(Vuex);
 fb.auth.onAuthStateChanged(user => {
     if (user) {
         store.commit("setCurrentUser", user);
+    } else {
+        store.commit("setCurrentUser", null);
     }
 });
 
@@ -154,7 +156,7 @@ fb.calenderRounds
             calenderArray.push(round)
         });
         store.commit("setCalender", calenderArray)
-    })
+    });
 export const store = new Vuex.Store({
     state: {
         currentUser: null,

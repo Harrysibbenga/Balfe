@@ -45,7 +45,7 @@ const videosCollection = db.collection('videos');
 const galleryCollection = db.collection('gallery');
 const tracksCollection = db.collection("tracks");
 
-export default {
+export {
     db,
     auth,
     storage,

@@ -48,7 +48,6 @@ const router = new Router({
       component: Post
     }, {
       path: "/dashboard",
-      name: "dashboard",
       component: Dashboard,
       children: [{
           path: "/",
@@ -76,7 +75,6 @@ const router = new Router({
           component: Calender
         }, {
           path: "media",
-          name: "media",
           component: Media,
           children: [{
               path: "/",
