@@ -113,7 +113,7 @@ fb.videosCollection
     });
 
 fb.tracksCollection
-    .orderBy("name", "desc")
+    .orderBy("name")
     .onSnapshot(querySnapshot => {
         let trackArray = [],
             trackOptions = []

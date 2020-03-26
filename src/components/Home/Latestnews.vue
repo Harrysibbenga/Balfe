@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="news-sec"
-    class="py-5 border-top border-bottom border-primary bg-white text-dark"
-  >
+  <div id="news-sec" class="py-5 border-top border-bottom border-primary bg-white text-dark">
     <h2 class="pl-3 pb-5 font-weight-bold">Latest News</h2>
     <div class="container-lg">
       <div class="row">
@@ -15,12 +12,7 @@
             <div class="container-fluid p-0 mb-5">
               <div class="row">
                 <div class="col-md-6">
-                  <app-button
-                    type="link"
-                    :linkTo="`/post/${post.id}`"
-                    :addClass="['btn-md']"
-                    >View</app-button
-                  >
+                  <app-button type="link" :linkTo="`/post/${post.id}`" :addClass="['btn-md']">View</app-button>
                 </div>
               </div>
             </div>
@@ -58,7 +50,7 @@ export default {
   },
   created() {
     fb.postsCollection
-      .orderBy("createdOn", "desc")
+      .orderBy("date", "desc")
       .limit(3)
       .onSnapshot(querySnapshot => {
         let postsArray = [];

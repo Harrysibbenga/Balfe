@@ -1,5 +1,5 @@
 <template>
-  <div class="container text-left">
+  <div class="text-left">
     <h1 class="text-left">Add partner</h1>
     <hr class="balfe-line" />
     <b-form @submit.prevent="submitHandler">
@@ -10,12 +10,7 @@
       </transition>
       <img :src="partner.logo" class="img-fluid" />
       <div class="input_field">
-        <input
-          type="file"
-          @change="uploadImage"
-          ref="fileInput"
-          accept="image/*"
-        />
+        <input type="file" @change="uploadImage" ref="fileInput" accept="image/*" />
       </div>
 
       <b-form-group id="name" label="Name" label-for="name" class="text-left">
@@ -29,23 +24,14 @@
         ></b-input>
       </b-form-group>
 
-      <b-form-group
-        id="desc"
-        label="Description"
-        label-for="desc"
-        class="text-left"
-      >
+      <b-form-group id="desc" label="Description" label-for="desc" class="text-left">
         <wysiwyg id="desc" v-model="partner.desc"></wysiwyg>
       </b-form-group>
 
-      <b-button type="submit" :disabled="partner.desc == ''" variant="primary"
-        >Add post</b-button
-      >
+      <b-button type="submit" :disabled="partner.desc == ''" variant="primary">Add post</b-button>
     </b-form>
 
-    <div v-if="partnerAdded" variant="success">
-      Your partner has been added!
-    </div>
+    <div v-if="partnerAdded" variant="success">Your partner has been added!</div>
   </div>
 </template>
 

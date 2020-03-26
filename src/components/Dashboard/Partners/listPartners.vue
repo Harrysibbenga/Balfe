@@ -22,18 +22,8 @@
             <td>{{ partner.desc }}</td>
             <td>{{ partner.createdOn | formatCreation }}</td>
             <td>
-              <div
-                class="d-inline px-1 text-dark"
-                @click="editPartner(partner)"
-              >
-                Edit
-              </div>
-              <div
-                class="d-inline px-1 text-primary"
-                @click="deletePartner(partner)"
-              >
-                Delete
-              </div>
+              <div class="d-inline px-1 text-dark" @click="editPartner(partner)">Edit</div>
+              <div class="d-inline px-1 text-primary" @click="deletePartner(partner)">Delete</div>
             </td>
           </tr>
         </tbody>
@@ -49,9 +39,7 @@
       </div>
       <div class="d-block text-right pt-3">
         <b-button class="mr-2" @click="deleteOnConfirm">Yes, delete</b-button>
-        <b-button variant="primary" @click="deleteOnCancel"
-          >No, do not delete it</b-button
-        >
+        <b-button variant="primary" @click="deleteOnCancel">No, do not delete it</b-button>
       </div>
     </b-modal>
 
@@ -70,12 +58,7 @@
           <img :src="partner.logo" v-if="newImage" class="img-fluid" />
         </div>
         <div class="input_field">
-          <input
-            type="file"
-            @change="uploadImage"
-            ref="fileInput"
-            accept="image/*"
-          />
+          <input type="file" @change="uploadImage" ref="fileInput" accept="image/*" />
         </div>
         <b-form-select
           v-model="selectImage.selected"
@@ -85,9 +68,7 @@
           @change="selectOption"
         >
           <template v-slot:first>
-            <b-form-select-option :value="null" disabled
-              >-- Please select an option --</b-form-select-option
-            >
+            <b-form-select-option :value="null" disabled>-- Please select an option --</b-form-select-option>
           </template>
         </b-form-select>
         <b-form-group id="name" label="name" label-for="name" class="text-left">
@@ -105,9 +86,11 @@
           label-for="description"
           class="text-left"
         >
-          <wysiwyg id="description" v-model="partner.desc">{{
+          <wysiwyg id="description" v-model="partner.desc">
+            {{
             currentPartner.desc
-          }}</wysiwyg>
+            }}
+          </wysiwyg>
         </b-form-group>
       </b-form>
       <div class="d-block text-right pt-3">
@@ -211,7 +194,7 @@ export default {
           // Handle successful uploads on complete
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
           uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-            this.partner.image = downloadURL;
+            this.partner.logo = downloadURL;
             fb.logosCollection
               .add({
                 name: file.name,
@@ -234,7 +217,7 @@ export default {
           .then(doc => {
             let image = doc.data();
             this.selectImage.selectedUrl = image.url;
-            this.partner.image = image.url;
+            this.partner.logo = image.url;
           })
           .catch(error => alert(error.message));
       }
@@ -259,7 +242,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" >
 @import "~vue-wysiwyg/dist/vueWysiwyg.css";
 .loading {
   position: fixed;

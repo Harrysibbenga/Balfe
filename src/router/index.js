@@ -10,9 +10,11 @@ import Post from "@/components/Post/index"
 import Dashboard from "@/components/Dashboard/index";
 import MainDashboard from "@/components/Dashboard/welcome";
 // Posts
+import Posts from "@/components/Dashboard/Posts/index"
 import AddPost from "@/components/Dashboard/Posts/addPost";
 import ListPosts from "@/components/Dashboard/Posts/listPosts";
 //Partners
+import Partners from "@/components/Dashboard/Partners/index"
 import AddPartners from '@/components/Dashboard/Partners/addPartner';
 import ListPartners from '@/components/Dashboard/Partners/listPartners';
 //Media
@@ -54,19 +56,28 @@ const router = new Router({
           component: MainDashboard
         },
         {
-          path: "add_posts",
-          component: AddPost
+          path: "posts",
+          component: Posts,
+          children: [{
+              path: "add_posts",
+              component: AddPost
+            },
+            {
+              path: "list_posts",
+              component: ListPosts
+            }
+          ]
         },
         {
-          path: "list_posts",
-          component: ListPosts
-        },
-        {
-          path: "add_partners",
-          component: AddPartners
-        }, {
-          path: "list_partners",
-          component: ListPartners
+          path: "partners",
+          component: Partners,
+          children: [{
+            path: "add_partners",
+            component: AddPartners
+          }, {
+            path: "list_partners",
+            component: ListPartners
+          }]
         }, {
           path: "drivers",
           component: Drivers
