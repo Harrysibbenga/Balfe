@@ -17,16 +17,16 @@
           </b-form-select>
 
           <b-form-group id="number" label="Round" label-for="number" class="text-left">
-            <b-input id="number" v-model.trim="track.number" type="text"></b-input>
+            <b-input id="number" v-model.trim="round.number" type="text"></b-input>
           </b-form-group>
 
           <b-form-group id="date" label="Date" label-for="date" class="text-left">
-            <datepicker id="date" v-model="track.date" type="text"></datepicker>
+            <datepicker id="date" v-model="round.date" type="text"></datepicker>
           </b-form-group>
 
           <b-button
             type="submit"
-            :disabled="selectTrack.selected == null || track.date == ''"
+            :disabled="selectTrack.selected == null || round.date == ''"
             variant="primary"
             @click="createRound"
           >Add Round</b-button>
@@ -58,13 +58,13 @@
           </thead>
           <tbody>
             <tr>
-              <td>{{ track.name }}</td>
-              <td>{{ track.corners }}</td>
-              <td>{{ track.length }} m</td>
-              <td>{{ track.createdOn | formatCreation }}</td>
+              <td>{{ viewTrack.track.name }}</td>
+              <td>{{ viewTrack.track.corners }}</td>
+              <td>{{ viewTrack.track.length }} m</td>
+              <td>{{ viewTrack.track.createdOn | formatCreation }}</td>
               <td>
-                <div class="d-inline px-1 text-dark" @click="editTrack(track)">Edit</div>
-                <div class="d-inline px-1 text-primary" @click="deleteTrack(track)">Delete</div>
+                <div class="d-inline px-1 text-dark" @click="editTrack(viewTrack.track)">Edit</div>
+                <div class="d-inline px-1 text-primary" @click="deleteTrack(viewTrack.track)">Delete</div>
               </td>
             </tr>
           </tbody>
@@ -117,9 +117,9 @@
           <tr v-for="(round, index) in calenderRounds" :key="index">
             <td scope="row">{{ round.number }}</td>
             <td>{{ round.date | formatDate }}</td>
-            <td>{{ round.trackInfo.name }}</td>
+            <td>{{ round.track.name }}</td>
             <td>
-              <img :src="round.trackInfo.image" class="img-fluid" />
+              <img :src="round.track.image" class="img-fluid" />
             </td>
             <td>{{ round.createdOn | formatCreation }}</td>
             <td>
@@ -170,16 +170,17 @@
 <script>
 import { mapState } from "vuex";
 import moment from "moment";
+import { calenderRounds } from "../../../firebaseConfig";
 const fb = require("../../../firebaseConfig");
 
 export default {
   data() {
     return {
-      track: {
-        trackInfo: null,
+      round: {
         date: "",
         number: ""
       },
+      trackId: null,
       roundToEdit: null,
       trackToEdit: null,
       editDialog: false,
@@ -196,7 +197,7 @@ export default {
         date: null
       },
       editForm: {
-        trackInfo: null,
+        trackId: null,
         date: "",
         number: ""
       },
@@ -218,15 +219,15 @@ export default {
     createRound() {
       fb.calenderRounds
         .add({
-          number: this.track.number,
-          date: this.track.date,
-          trackInfo: this.track.trackInfo,
+          number: this.round.number,
+          date: this.round.date,
+          trackId: this.trackId,
           createdOn: new Date()
         })
         .then(() => {
-          this.track.trackInfo = null;
-          this.track.date = "";
-          this.track.number = "";
+          this.trackId = null;
+          this.round.date = "";
+          this.round.number = "";
           this.selectTrack.selected = null;
         })
         .catch(error => alert(error.message));
@@ -236,8 +237,7 @@ export default {
         .doc(id)
         .get()
         .then(doc => {
-          this.track.trackInfo = doc.data();
-          this.track.trackInfo.id = doc.id;
+          this.trackId = doc.id;
         })
         .catch(error => alert(error.message));
     },
@@ -245,10 +245,9 @@ export default {
       this.roundToEdit = round;
       let date = round.date;
       this.editDialog = true;
-      this.editForm.trackInfo = round.trackInfo;
       this.currentRound.date = this.formatDate(date);
       this.editForm.number = round.number;
-      this.selectTrack.selected = round.trackInfo.id;
+      this.selectTrack.selected = round.trackId;
     },
     editOnConfirm() {
       this.performingRequest = true;
@@ -256,13 +255,12 @@ export default {
       fb.calenderRounds
         .doc(this.roundToEdit.id)
         .update({
-          trackInfo: this.editForm.trackInfo,
+          trackId: this.selectTrack.selected,
           date: this.editForm.date,
           number: this.editForm.number,
           createdOn: new Date()
         })
         .then(() => {
-          this.editForm.trackInfo = null;
           this.editForm.date = "";
           this.editForm.number = "";
           this.selectTrack.selected = null;
@@ -278,7 +276,6 @@ export default {
     editOnCancel() {
       this.roundToEdit = null;
       this.editDialog = false;
-      this.editForm.trackInfo = null;
       this.editForm.date = "";
       this.editForm.number = "";
       this.selectTrack.selected = null;
@@ -291,8 +288,8 @@ export default {
         .doc(id)
         .get()
         .then(doc => {
-          this.track = doc.data();
-          this.track.id = doc.id;
+          this.viewTrack.track = doc.data();
+          this.viewTrack.track.id = doc.id;
           this.trackView = true;
         })
         .catch(error => alert(error.message));
@@ -341,7 +338,27 @@ export default {
       this.editTrackDialog = false;
     },
     deleteTrack(track) {
-      fb.tracksCollection.doc(track.id).delete();
+      this.performingRequest = true;
+      const newTrackId = {
+        trackId: null
+      };
+      fb.calenderRounds
+        .where("trackId", "==", track.id)
+        .get()
+        .then(response => {
+          let batch = fb.batch();
+          response.docs.forEach(doc => {
+            const docRef = calenderRounds.doc(doc.id);
+            batch.update(docRef, newTrackId);
+          });
+        })
+        .then(() => {
+          fb.tracksCollection.doc(track.id).delete();
+        })
+        .catch(err => {
+          this.performingRequest = false;
+          alert(err.message);
+        });
     },
     editConf(type) {
       this.confirmation = type;
