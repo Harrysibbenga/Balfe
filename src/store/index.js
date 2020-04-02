@@ -153,7 +153,10 @@ fb.calenderRounds
         querySnapshot.forEach(doc => {
             let round = doc.data()
             round.id = doc.id
-            calenderArray.push(round)
+            fb.tracksCollection.doc(round.trackId).get().then(doc => {
+                round.track = doc.data()
+                calenderArray.push(round)
+            })
         });
         store.commit("setCalender", calenderArray)
     });
@@ -174,6 +177,7 @@ export const store = new Vuex.Store({
         trackOptions: [],
         videoOptions: [],
         galleryContent: [],
+        post: null
     },
     actions: {
         clearData({
@@ -184,6 +188,17 @@ export const store = new Vuex.Store({
             commit("setPartnerOptions", []);
             commit("setTrackOptions", []);
             commit("setVideoOptions", []);
+        },
+        getPost({
+            commit,
+        }, id) {
+            console.log(id)
+            fb.postsCollection.doc(id)
+                .get()
+                .then(doc => {
+                    let post = doc.data()
+                    commit("setPost", post)
+                })
         }
     },
     mutations: {
@@ -280,6 +295,16 @@ export const store = new Vuex.Store({
             } else {
                 state.calenderRounds = []
             }
+        },
+        setPost(state, val) {
+            if (val) {
+                state.post = val
+            } else {
+                state.post = null
+            }
+        },
+        clearPost(state) {
+            state.post = null
         }
     }
 });
