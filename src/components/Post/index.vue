@@ -9,42 +9,34 @@
     </div>
     <div class="container">
       <div class="row">
-        <div class="col-12">
-          {{ post.main }}
+        <div class="col-12">{{ post.main }}</div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6 col-md-4 col-lg-3" v-for="(image, index) in post.gallery" :key="index">
+          <img :src="image.url" class="img-fluid" />
         </div>
       </div>
       <div class="row">
-        <div
-          class="col-sm-6 col-md-4 col-lg-3"
-          v-for="(image, index) in post.gallery"
-          :key="index"
-        >
-          <img :src="image" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12">
-          {{ post.comment }}
-        </div>
+        <div class="col-12">{{ post.comments }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
 export default {
   computed: {
-    ...mapState(["post"]),
-    ...mapActions(["getPost"])
+    post() {
+      return this.$store.getters["posts/getPost"];
+    }
   },
   created() {
     let id = this.$route.params.id;
     console.log(id);
-    this.$store.dispatch("getPost", id);
+    this.$store.dispatch("posts/getPost", id);
   },
   destroyed() {
-    this.$store.commit("clearPost");
+    this.$store.commit("posts/clearPost");
   }
 };
 </script>

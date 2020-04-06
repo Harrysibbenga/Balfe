@@ -4,7 +4,7 @@ import Vue from "vue";
 import "./plugins/bootstrap-vue";
 import App from "./App.vue";
 import router from "./router/index";
-import store from "./store/index";
+import store from "./store/store";
 import "./assets/scss/custom.scss";
 import "./assets/css/style.css";
 import vuelidate from "vuelidate";
@@ -22,16 +22,14 @@ Vue.component("datepicker", Datepicker);
 Vue.use(vuelidate);
 Vue.use(wysiwyg, {});
 
-// // handle page reloads
+// Fetch user 
+fb.auth.onAuthStateChanged(user => {
+  store.dispatch('fetchUser', user)
+});
 
-let app
-fb.auth.onAuthStateChanged(() => {
-  if (!app) {
-    app = new Vue({
-      el: "#app",
-      router,
-      store,
-      render: h => h(App)
-    });
-  }
+new Vue({
+  el: "#app",
+  router,
+  store,
+  render: h => h(App)
 });

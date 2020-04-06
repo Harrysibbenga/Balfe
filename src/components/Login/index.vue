@@ -23,12 +23,8 @@
           @blur="$v.formdata.email.$touch()"
         ></b-input>
         <div class v-if="$v.formdata.email.$error">
-          <p class="error-lablel" v-if="!$v.formdata.email.required">
-            This field is required
-          </p>
-          <p class="error-lablel" v-if="!$v.formdata.email.email">
-            Please enter a valid email
-          </p>
+          <p class="error-lablel" v-if="!$v.formdata.email.required">This field is required</p>
+          <p class="error-lablel" v-if="!$v.formdata.email.email">Please enter a valid email</p>
         </div>
       </b-form-group>
       <b-form-group id="password" label="Password: " label-for="password">
@@ -43,12 +39,8 @@
           :class="{ invalid: $v.formdata.password.$error }"
         ></b-input>
         <div v-if="$v.formdata.password.$error">
-          <p class="error-lablel" v-if="!$v.formdata.password.required">
-            This field is required
-          </p>
-          <p class="error-lablel" v-if="!$v.formdata.password.minLength">
-            At Least 4 characters
-          </p>
+          <p class="error-lablel" v-if="!$v.formdata.password.required">This field is required</p>
+          <p class="error-lablel" v-if="!$v.formdata.password.minLength">At Least 4 characters</p>
         </div>
       </b-form-group>
       <b-button @click="login" variant="primary">Login</b-button>
@@ -93,7 +85,7 @@ export default {
       fb.auth
         .signInWithEmailAndPassword(this.formdata.email, this.formdata.password)
         .then(user => {
-          this.$store.commit("setCurrentUser", user.user);
+          this.$store.commit("setCurrentUser", user);
           this.performingRequest = false;
           this.$router.push("/dashboard");
         })

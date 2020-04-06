@@ -15,7 +15,7 @@
         <b-nav-item href="#">History</b-nav-item>
         <b-nav-item href="#">Drivers</b-nav-item>
         <b-nav-item href="#">Partners</b-nav-item>
-        <b-nav-item v-if="!currentUser" to="login">Login</b-nav-item>
+        <b-nav-item v-if="!currentUser" to="/login">Login</b-nav-item>
         <b-nav-item v-if="currentUser" @click="logout">Logout</b-nav-item>
         <b-nav-item to="dashboard" v-if="currentUser">Dashboard</b-nav-item>
         <!-- Links -->
@@ -25,12 +25,13 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 const fb = require("../../firebaseConfig");
 
 export default {
   computed: {
-    ...mapState(["currentUser", "clearData"])
+    currentUser() {
+      return this.$store.getters["currentUser"];
+    }
   },
   methods: {
     logout() {

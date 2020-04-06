@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <b-nav tabs>
       <b-nav-item to="/dashboard/posts">Posts</b-nav-item>
       <b-nav-item to="/dashboard/partners">Partners</b-nav-item>
