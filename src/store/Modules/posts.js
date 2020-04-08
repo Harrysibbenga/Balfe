@@ -3,18 +3,18 @@ const fb = require("../../firebaseConfig");
 const posts = {
     namespaced: true,
     state: {
-        posts: [],
+        allPosts: [],
         post: null
     },
     mutations: {
-        setPosts(state, val) {
+        getPosts(state, val) {
             if (val) {
-                state.posts = val;
+                state.allPosts = val
             } else {
-                state.posts = [];
+                state.allPosts = []
             }
         },
-        setPost(state, val) {
+        getPost(state, val) {
             if (val) {
                 state.post = val;
             } else {
@@ -34,7 +34,7 @@ const posts = {
                 .get()
                 .then(doc => {
                     let post = doc.data();
-                    commit("setPost", post);
+                    commit("getPost", post);
                 });
         },
         getPosts({
@@ -48,7 +48,7 @@ const posts = {
                     post.id = doc.id;
                     postsArray.push(post);
                 });
-                commit("setPosts", postsArray);
+                commit("getPosts", postsArray)
             });
         }
     },
@@ -57,7 +57,7 @@ const posts = {
             return state.post
         },
         getPosts(state) {
-            return state.posts
+            return state.allPosts
         }
     }
 }
