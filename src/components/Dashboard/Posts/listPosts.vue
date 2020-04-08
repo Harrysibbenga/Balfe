@@ -112,7 +112,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import moment from "moment";
 const fb = require("../../../firebaseConfig");
 
@@ -140,7 +139,12 @@ export default {
     };
   },
   computed: {
-    ...mapState(["posts", "options"])
+    posts() {
+      return this.$store.getters["posts/getPosts"];
+    },
+    options() {
+      return this.$store.getters["images/getOptions"];
+    }
   },
   methods: {
     deletePost(post) {
@@ -260,7 +264,12 @@ export default {
       let date = val.toDate();
       return moment(date).format("MMMM Do YYYY");
     }
-  }
+  },
+  created() {
+    this.$store.dispatch("posts/getPosts");
+    this.$store.dispatch("images/getOptions");
+  },
+  destroyed() {}
 };
 </script>
 
