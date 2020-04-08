@@ -85,7 +85,7 @@ export default {
       fb.auth
         .signInWithEmailAndPassword(this.formdata.email, this.formdata.password)
         .then(user => {
-          this.$store.commit("setCurrentUser", user);
+          this.$store.commit("admin/setCurrentUser", user);
           this.performingRequest = false;
           this.$router.push("/dashboard");
         })

@@ -30,13 +30,13 @@ const fb = require("../../firebaseConfig");
 export default {
   computed: {
     currentUser() {
-      return this.$store.getters["currentUser"];
+      return this.$store.getters["admin/currentUser"];
     }
   },
   methods: {
     logout() {
       fb.auth.signOut().then(() => {
-        this.$store.dispatch("clearData");
+        this.$store.dispatch("admin/clearData");
         this.$router.push("/");
       });
     }

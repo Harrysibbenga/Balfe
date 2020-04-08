@@ -24,15 +24,15 @@ Vue.use(wysiwyg, {});
 
 // Fetch user 
 fb.auth.onAuthStateChanged(user => {
-  store.dispatch('fetchUser', user.user)
+  store.dispatch('admin/fetchUser', user.user)
 });
 
 // handle page reload
 fb.auth.onAuthStateChanged(user => {
   if (user) {
-    store.commit("setCurrentUser", user);
+    store.commit("admin/setCurrentUser", user);
   } else {
-    store.commit("setCurrentUser", null);
+    store.commit("admin/setCurrentUser", null);
   }
 });
 
