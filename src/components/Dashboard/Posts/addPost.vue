@@ -354,6 +354,7 @@ export default {
         this.$refs.fileInput.value = "";
         this.type = ""
         this.newImage = false;
+        this.$store.commit("images/setImageUrl", null);
       }
     },
     close() {
