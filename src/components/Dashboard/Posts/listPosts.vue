@@ -563,14 +563,11 @@ export default {
         this.select = this.currentPost.imageId;
       } else if (event.target.value == "gallery") {
         this.imageChoice = true;
-        console.log(this.currentPost.gallery);
         if (this.currentPost.gallery.length > 0) {
           for (let i = 0; i < this.currentPost.gallery.length; i++) {
             let selId = this.currentPost.gallery[i].id;
             this.selected.push(selId);
           }
-        } else {
-          console.log("stored", this.selected);
         }
       }
     },
@@ -636,7 +633,6 @@ export default {
         .then(doc => {
           let post = doc.data();
           this.currentGallery = post.gallery;
-          console.log(this.currentGallery);
         });
     },
     checkGallery() {
