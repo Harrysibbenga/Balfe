@@ -32,7 +32,6 @@ export default {
   },
   created() {
     let id = this.$route.params.id;
-    console.log(id);
     this.$store.dispatch("posts/getPost", id);
   },
   destroyed() {
