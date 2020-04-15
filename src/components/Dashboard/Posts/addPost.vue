@@ -12,6 +12,7 @@
       <div class="container">
         <img :src="post.image" class="img-fluid" />
       </div>
+
       <b-form-group id="title" label="Title" label-for="title" class="text-left">
         <b-input
           id="title"
@@ -296,7 +297,8 @@ export default {
           this.performingRequest = false;
           this.exist = false;
           this.galleryImages = [];
-          (this.imageId = null), this.$store.commit("images/setImageUrl", null);
+          this.imageId = null;
+          this.$store.commit("images/setImageUrl", null);
           setInterval(() => {
             this.postAdded = null;
           }, 3000);
@@ -396,11 +398,19 @@ export default {
     close() {
       if (this.input == "post") {
         this.newImage = false;
-        this.imageId = this.store.getters["images/getImage"].id || null;
         this.$refs.fileInput.value = "";
-        this.post.image = this.$store.getters["images/getImageUrl"];
+        let url = this.$store.getters["images/getImageUrl"];
+        this.post.image = url;
         this.$store.commit("images/setImageUrl", null);
         this.type = "";
+        fb.imageUrlCollection
+          .where("url", "==", url)
+          .get()
+          .then(docs => {
+            docs.forEach(doc => {
+              this.imageId = doc.id;
+            });
+          });
       } else if (this.input == "gallery") {
         this.$store.dispatch(
           "images/getImage",
@@ -416,7 +426,6 @@ export default {
           this.galleryImages.push(galleryImage);
         }
         this.newImage = false;
-        this.imageId = null;
         this.$refs.galleryInput.value = "";
         this.$store.commit("images/setImageUrl", null);
         this.type = "";

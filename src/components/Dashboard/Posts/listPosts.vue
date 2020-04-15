@@ -510,7 +510,6 @@ export default {
           })
           .then(() => {
             this.userPrompt = false;
-            this.imageId = null;
             this.$refs.galleryInput.value = "";
             this.input = "";
             this.newImageUpload = false;
@@ -519,7 +518,6 @@ export default {
       } else if (this.input == "post") {
         this.post.image = this.$store.getters["images/getImageUrl"];
         this.userPrompt = false;
-        this.imageId = null;
         this.$refs.fileInput.value = "";
         this.newImageUpload = false;
         this.$store.commit("images/setImageUrl", null);
@@ -530,7 +528,6 @@ export default {
     close() {
       if (this.input == "post") {
         this.newImageUpload = false;
-        this.imageId = null;
         this.$refs.fileInput.value = "";
         this.post.image = this.$store.getters["images/getImageUrl"];
         this.$store.commit("images/setImageUrl", null);
@@ -553,7 +550,6 @@ export default {
           })
           .then(() => {
             this.newImageUpload = false;
-            this.imageId = null;
             this.$refs.galleryInput.value = "";
             this.$store.commit("images/setImageUrl", null);
             this.input = "";
