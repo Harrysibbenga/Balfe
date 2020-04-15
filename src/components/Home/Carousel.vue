@@ -28,7 +28,7 @@
               <div class="partner-logo col-12 col-md-12 col-lg-6">
                 <h1 class="h1">{{ latestNews.tilte }}</h1>
                 <p class="excerpt">{{ latestNews.excerpt }}</p>
-                <p class="date">{{ latestNews.date }}</p>
+                <p class="date">{{ latestNews.date | formatDate}}</p>
               </div>
             </div>
             <div class="row">
@@ -107,6 +107,7 @@
 
 <script>
 const fb = require("../../firebaseConfig");
+import moment from "moment";
 export default {
   data() {
     return {
@@ -121,6 +122,22 @@ export default {
     },
     onSlideEnd() {
       this.sliding = false;
+    }
+  },
+  filters: {
+    formatCreation(val) {
+      if (!val) {
+        return "-";
+      }
+      let date = val.toDate();
+      return moment(date).fromNow();
+    },
+    formatDate(val) {
+      if (!val) {
+        return "-";
+      }
+      let date = val.toDate();
+      return moment(date).format("MMMM Do YYYY");
     }
   },
   created() {
