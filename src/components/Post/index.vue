@@ -9,7 +9,7 @@
     </div>
     <div class="container">
       <div class="row">
-        <div class="col-12">{{ post.main }}</div>
+        <div class="col-12" v-html="post.main"></div>
       </div>
       <div class="row">
         <div class="col-sm-6 col-md-4 col-lg-3" v-for="(image, index) in post.gallery" :key="index">
@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-12">{{ post.comments }}</div>
+        <div class="col-12" v-html="post.comments"></div>
       </div>
     </div>
   </div>
