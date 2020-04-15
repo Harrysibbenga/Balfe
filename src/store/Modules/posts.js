@@ -40,7 +40,7 @@ const posts = {
         getPosts({
             commit
         }) {
-            fb.postsCollection.orderBy("createdOn", "desc").onSnapshot(querySnapshot => {
+            fb.postsCollection.orderBy("date", "desc").onSnapshot(querySnapshot => {
                 let postsArray = [];
 
                 querySnapshot.forEach(doc => {

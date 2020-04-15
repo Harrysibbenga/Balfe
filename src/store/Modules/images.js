@@ -6,7 +6,7 @@ const images = {
         images: [],
         imageUrl: null,
         imageId: null,
-        image:null,
+        image: null,
         request: false,
         videos: [],
         options: [],
@@ -31,15 +31,15 @@ const images = {
             commit
         }, url) {
             fb.imageUrlCollection.where("url", "==", url)
-            .get()
-            .then(docs => {
-                docs.forEach(doc => {
-                    let image = doc.data();
-                    image.id = doc.id;
-                    commit("getImage", image);
-                });
-                
-            })
+                .get()
+                .then(docs => {
+                    docs.forEach(doc => {
+                        let image = doc.data();
+                        image.id = doc.id;
+                        commit("getImage", image);
+                    });
+
+                })
         },
         getOptions({
             commit
@@ -74,14 +74,7 @@ const images = {
                 },
                 () => {
                     // Handle successful uploads on complete
-                    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                     uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-                        // this.selectImage.selectedUrl = downloadURL;
-                        // let galleryImage = {
-                        //     name: file.name,
-                        //     url: downloadURL
-                        // };
-                        // this.galleryImages.push(galleryImage);
                         fb.imageUrlCollection
                             .add({
                                 name: file.name,
@@ -95,6 +88,9 @@ const images = {
                                 setTimeout(() => {
                                     commit("confirmation", false)
                                 }, 5000)
+                            })
+                            .then(() => {
+                                commit('getImage', file)
                             })
                             .catch(err => {
                                 alert(err.message)
@@ -123,7 +119,7 @@ const images = {
             if (val) {
                 state.image = val;
             } else {
-                state.image = [];
+                state.image = {};
             }
         },
         setImageUrl(state, val) {

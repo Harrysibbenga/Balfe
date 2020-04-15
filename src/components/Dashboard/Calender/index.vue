@@ -151,7 +151,7 @@
         </b-form-select>
 
         <b-form-group id="date" label="Date" label-for="date" class="text-left">
-          <span>Current date: {{ currentRound.date }}</span>
+          <span>Current date: {{ currentRound.date | formatDate}}</span>
           <datepicker id="date" v-model="editForm.date" type="date"></datepicker>
         </b-form-group>
 
@@ -365,13 +365,6 @@ export default {
       setTimeout(() => {
         this.confirmation = false;
       }, 3000);
-    },
-    formatDate(val) {
-      if (!val) {
-        return "-";
-      }
-      let date = val.toDate();
-      return moment(date).format("MMMM Do YYYY");
     }
   },
   filters: {
