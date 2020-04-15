@@ -7,6 +7,10 @@ const images = {
         imageUrl: null,
         imageId: null,
         image: null,
+        logos: [],
+        logoUrl: null,
+        logoId: null,
+        logo: null,
         request: false,
         videos: [],
         options: [],
@@ -37,6 +41,34 @@ const images = {
                         let image = doc.data();
                         image.id = doc.id;
                         commit("getImage", image);
+                    });
+
+                })
+        },
+        getLogos({
+            commit
+        }) {
+            fb.logosCollection.orderBy("createdOn", "desc").onSnapshot(querySnapshot => {
+                let logos = [];
+
+                querySnapshot.forEach(doc => {
+                    let logo = doc.data();
+                    logo.id = doc.id;
+                    logos.push(logo);
+                });
+                commit("getLogos", logos);
+            });
+        },
+        getLogo({
+            commit
+        }, url) {
+            fb.logosCollection.where("url", "==", url)
+                .get()
+                .then(docs => {
+                    docs.forEach(doc => {
+                        let logo = doc.data();
+                        logo.id = doc.id;
+                        commit("getLogo", logo);
                     });
 
                 })
@@ -89,8 +121,43 @@ const images = {
                                     commit("confirmation", false)
                                 }, 5000)
                             })
+                            .catch(err => {
+                                alert(err.message)
+                            });
+                    });
+                }
+            );
+        },
+        uploadLogo({
+            commit
+        }, file) {
+            commit("setRequest", true)
+            let storageRef = fb.storage.ref("logos/" + file.name);
+            let uploadTask = storageRef.put(file);
+            uploadTask.on(
+                "state_changed",
+                () => {
+                    // snapshot
+                },
+                () => {
+                    // Handle unsuccessful uploads
+                },
+                () => {
+                    // Handle successful uploads on complete
+                    uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                        fb.logosCollection
+                            .add({
+                                name: file.name,
+                                createdOn: new Date(),
+                                url: downloadURL
+                            })
                             .then(() => {
-                                commit('getImage', file)
+                                commit('setLogoUrl', downloadURL)
+                                commit("setRequest", false)
+                                commit("confirmation", true)
+                                setTimeout(() => {
+                                    commit("confirmation", false)
+                                }, 5000)
                             })
                             .catch(err => {
                                 alert(err.message)
@@ -122,6 +189,20 @@ const images = {
                 state.image = {};
             }
         },
+        getLogos(state, val) {
+            if (val) {
+                state.logos = val;
+            } else {
+                state.logos = [];
+            }
+        },
+        getLogo(state, val) {
+            if (val) {
+                state.logo = val;
+            } else {
+                state.logo = {};
+            }
+        },
         setImageUrl(state, val) {
             if (val) {
                 state.imageUrl = val
@@ -129,11 +210,25 @@ const images = {
                 state.imageUrl = null
             }
         },
+        setLogoUrl(state, val) {
+            if (val) {
+                state.logoUrl = val
+            } else {
+                state.logoUrl = null
+            }
+        },
         setImageId(state, val) {
             if (val) {
                 state.imageId = val
             } else {
                 state.imageId = null
+            }
+        },
+        setLogoId(state, val) {
+            if (val) {
+                state.logoId = val
+            } else {
+                state.logoId = null
             }
         },
         setRequest(state, val) {
@@ -161,6 +256,12 @@ const images = {
         getImage(state) {
             return state.image
         },
+        getLogos(state) {
+            return state.logos
+        },
+        getLogo(state) {
+            return state.logo
+        },
         getRequest(state) {
             return state.request
         },
@@ -169,6 +270,12 @@ const images = {
         },
         getImageId(state) {
             return state.imageId
+        },
+        getLogoUrl(state) {
+            return state.logoUrl
+        },
+        getLogoId(state) {
+            return state.logoId
         },
         confirmation(state) {
             return state.confirmation
