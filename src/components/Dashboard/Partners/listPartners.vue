@@ -223,7 +223,8 @@ export default {
       partner: {
         name: "",
         desc: "",
-        logoUrl: ""
+        logoUrl: "",
+        logoId: ""
       },
       newImage: false,
       newImageUpload: false,
@@ -274,6 +275,7 @@ export default {
       this.partner.logo = this.currentPartner.logo;
       this.partner.name = this.currentPartner.name;
       this.partner.desc = this.currentPartner.desc;
+      this.partner.logoId = this.currentPartner.logoId;
     },
     editOnCancel() {
       this.editDialog = false;
@@ -285,7 +287,7 @@ export default {
       let logoUrl = this.partner.logoUrl,
         name = this.partner.name,
         desc = this.partner.desc,
-        logoId = this.logoId;
+        logoId = this.partner.logoId;
 
       fb.partnersCollection
         .doc(this.toEdit.id)
@@ -299,10 +301,11 @@ export default {
         .then(() => {
           this.currentPartner = {};
           this.newImage = false;
-          this.logoId = "";
+          this.partner.logoId = "";
           this.partner.logoUrl = "";
           this.partner.name = "";
           this.partner.desc = "";
+          this.logoId = "";
         })
         .catch(error => alert(error.message));
     },
@@ -356,6 +359,7 @@ export default {
     confirm() {
       if (this.input == "partner") {
         this.partner.logoUrl = this.$store.getters["images/getLogoUrl"];
+        this.partner.logoId = this.logoId;
         this.userPrompt = false;
         this.$refs.fileInput.value = "";
         this.newImageUpload = false;
@@ -374,7 +378,7 @@ export default {
           .get()
           .then(docs => {
             docs.forEach(doc => {
-              this.logoId = doc.id;
+              this.partner.logoId = doc.id;
             });
           });
         this.$refs.fileInput.value = "";
@@ -398,7 +402,7 @@ export default {
             let image = doc.data();
             this.newImage = true;
             this.partner.logoUrl = image.url;
-            this.logoId = doc.id;
+            this.partner.logoId = doc.id;
           })
           .then(() => {
             this.logoChoice = false;
@@ -431,7 +435,7 @@ export default {
   },
   created() {
     this.$store.dispatch("partners/setPartners");
-    this.$store.dispatch("images/getLogos");
+    this.$store.dispatch("images/setLogos");
   }
 };
 </script>

@@ -41,7 +41,7 @@ const partners = {
         setPartners({
             commit
         }) {
-            fb.partnersCollection.orderBy("createdOn", "desc").onSnapshot(querySnapshot => {
+            fb.partnersCollection.orderBy("name", "desc").onSnapshot(querySnapshot => {
                 let partnerArray = [];
 
                 querySnapshot.forEach(doc => {
