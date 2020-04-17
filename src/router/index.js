@@ -5,7 +5,10 @@ import firebase from "firebase";
 import Home from "@/components/Home/index";
 import Login from "@/components/Login/index";
 import NotFound from "@/components/404/index";
-import Post from "@/components/Post/index"
+import Post from "@/components/Post/Post";
+import AllPosts from "@/components/Post/allPosts";
+import History from "@/components/History/Post";
+import AllHistoricPosts from "@/components/History/allPosts";
 // Dashboard
 import Dashboard from "@/components/Dashboard/index";
 import MainDashboard from "@/components/Dashboard/welcome";
@@ -13,6 +16,10 @@ import MainDashboard from "@/components/Dashboard/welcome";
 import Posts from "@/components/Dashboard/Posts/index"
 import AddPost from "@/components/Dashboard/Posts/addPost";
 import ListPosts from "@/components/Dashboard/Posts/listPosts";
+//Historic 
+import Historic from "@/components/Dashboard/History/index"
+import AddHistory from "@/components/Dashboard/History/addHistory"
+import ListHistory from "@/components/Dashboard/History/listHistory"
 //Partners
 import Partners from "@/components/Dashboard/Partners/index"
 import AddPartners from '@/components/Dashboard/Partners/addPartner';
@@ -48,7 +55,23 @@ const router = new Router({
       path: '/post/:id',
       name: 'post',
       component: Post
-    }, {
+    },
+    {
+      path: '/all_posts',
+      name: 'all_posts',
+      component: AllPosts
+    },
+    {
+      path: '/history/:id',
+      name: 'history_post',
+      component: History
+    },
+    {
+      path: '/all_posts',
+      name: 'historic_posts',
+      component: AllHistoricPosts
+    },
+    {
       path: "/dashboard",
       component: Dashboard,
       children: [{
@@ -65,6 +88,19 @@ const router = new Router({
             {
               path: "list_posts",
               component: ListPosts
+            }
+          ]
+        },
+        {
+          path: "history",
+          component: Historic,
+          children: [{
+              path: "add_history",
+              component: AddHistory
+            },
+            {
+              path: "list_history",
+              component: ListHistory
             }
           ]
         },
