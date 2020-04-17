@@ -5,19 +5,21 @@ const images = {
     state: {
         images: [],
         imageUrl: null,
-        imageId: null,
         image: null,
         logos: [],
         logoUrl: null,
-        logoId: null,
         logo: null,
+        driverImages: [],
+        driverImageUrl: null,
+        driverImage: null,
+        trackImages: [],
+        trackImageUrl: null,
+        trackImage: null,
         request: false,
-        videos: [],
-        options: [],
         confirmation: false
     },
     actions: {
-        getImages({
+        setImages({
             commit
         }) {
             fb.imageUrlCollection.orderBy("createdOn", "desc").onSnapshot(querySnapshot => {
@@ -28,10 +30,10 @@ const images = {
                     image.id = doc.id;
                     images.push(image);
                 });
-                commit("getImages", images);
+                commit("setImages", images);
             });
         },
-        getImage({
+        setImage({
             commit
         }, url) {
             fb.imageUrlCollection.where("url", "==", url)
@@ -40,12 +42,12 @@ const images = {
                     docs.forEach(doc => {
                         let image = doc.data();
                         image.id = doc.id;
-                        commit("getImage", image);
+                        commit("setImage", image);
                     });
 
                 })
         },
-        getLogos({
+        setLogos({
             commit
         }) {
             fb.logosCollection.orderBy("createdOn", "desc").onSnapshot(querySnapshot => {
@@ -56,10 +58,10 @@ const images = {
                     logo.id = doc.id;
                     logos.push(logo);
                 });
-                commit("getLogos", logos);
+                commit("setLogos", logos);
             });
         },
-        getLogo({
+        setLogo({
             commit
         }, url) {
             fb.logosCollection.where("url", "==", url)
@@ -68,27 +70,66 @@ const images = {
                     docs.forEach(doc => {
                         let logo = doc.data();
                         logo.id = doc.id;
-                        commit("getLogo", logo);
+                        commit("setLogo", logo);
                     });
 
                 })
         },
-        getOptions({
+        setDriverImages({
             commit
         }) {
-            fb.imageUrlCollection.orderBy("createdOn", "desc").onSnapshot(querySnapshot => {
-                let imagesOptions = []
+            fb.driversImagesCollection.orderBy("createdOn", "desc").onSnapshot(querySnapshot => {
+                let images = [];
 
                 querySnapshot.forEach(doc => {
                     let image = doc.data();
-                    let imageOption = {
-                        value: doc.id,
-                        text: image.name
-                    };
-                    imagesOptions.push(imageOption);
+                    image.id = doc.id;
+                    images.push(image);
                 });
-                commit("getOptions", imagesOptions);
+                commit("setDriverImages", images);
             });
+        },
+        setDriverImage({
+            commit
+        }, url) {
+            fb.driversImagesCollection.where("url", "==", url)
+                .get()
+                .then(docs => {
+                    docs.forEach(doc => {
+                        let image = doc.data();
+                        image.id = doc.id;
+                        commit("setDriverImage", image);
+                    });
+
+                })
+        },
+        setTrackImages({
+            commit
+        }) {
+            fb.tracksImagesCollection.orderBy("createdOn", "desc").onSnapshot(querySnapshot => {
+                let images = [];
+
+                querySnapshot.forEach(doc => {
+                    let image = doc.data();
+                    image.id = doc.id;
+                    images.push(image);
+                });
+                commit("setTrackImages", images);
+            });
+        },
+        setTrackImage({
+            commit
+        }, url) {
+            fb.tracksImagesCollection.where("url", "==", url)
+                .get()
+                .then(docs => {
+                    docs.forEach(doc => {
+                        let image = doc.data();
+                        image.id = doc.id;
+                        commit("setTrackImage", image);
+                    });
+
+                })
         },
         uploadImage({
             commit
@@ -165,42 +206,139 @@ const images = {
                     });
                 }
             );
+        },
+        uploadDriverImage({
+            commit
+        }, file) {
+            commit("setRequest", true)
+            let storageRef = fb.storage.ref("drivers/" + file.name);
+            let uploadTask = storageRef.put(file);
+            uploadTask.on(
+                "state_changed",
+                () => {
+                    // snapshot
+                },
+                () => {
+                    // Handle unsuccessful uploads
+                },
+                () => {
+                    // Handle successful uploads on complete
+                    uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                        fb.driversImagesCollection
+                            .add({
+                                name: file.name,
+                                createdOn: new Date(),
+                                url: downloadURL
+                            })
+                            .then(() => {
+                                commit('setDriverUrl', downloadURL)
+                                commit("setRequest", false)
+                                commit("confirmation", true)
+                                setTimeout(() => {
+                                    commit("confirmation", false)
+                                }, 5000)
+                            })
+                            .catch(err => {
+                                alert(err.message)
+                            });
+                    });
+                }
+            );
+        },
+        uploadTrackImage({
+            commit
+        }, file) {
+            commit("setRequest", true)
+            let storageRef = fb.storage.ref("tracks/" + file.name);
+            let uploadTask = storageRef.put(file);
+            uploadTask.on(
+                "state_changed",
+                () => {
+                    // snapshot
+                },
+                () => {
+                    // Handle unsuccessful uploads
+                },
+                () => {
+                    // Handle successful uploads on complete
+                    uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                        fb.tracksImagesCollection
+                            .add({
+                                name: file.name,
+                                createdOn: new Date(),
+                                url: downloadURL
+                            })
+                            .then(() => {
+                                commit('setTrackUrl', downloadURL)
+                                commit("setRequest", false)
+                                commit("confirmation", true)
+                                setTimeout(() => {
+                                    commit("confirmation", false)
+                                }, 5000)
+                            })
+                            .catch(err => {
+                                alert(err.message)
+                            });
+                    });
+                }
+            );
         }
     },
     mutations: {
-        getOptions(state, val) {
-            if (val) {
-                state.options = val;
-            } else {
-                state.options = [];
-            }
-        },
-        getImages(state, val) {
+        setImages(state, val) {
             if (val) {
                 state.images = val;
             } else {
                 state.images = [];
             }
         },
-        getImage(state, val) {
+        setImage(state, val) {
             if (val) {
                 state.image = val;
             } else {
                 state.image = {};
             }
         },
-        getLogos(state, val) {
+        setLogos(state, val) {
             if (val) {
                 state.logos = val;
             } else {
                 state.logos = [];
             }
         },
-        getLogo(state, val) {
+        setLogo(state, val) {
             if (val) {
                 state.logo = val;
             } else {
                 state.logo = {};
+            }
+        },
+        setDriverImages(state, val) {
+            if (val) {
+                state.driverImages = val;
+            } else {
+                state.driverImages = [];
+            }
+        },
+        setDriverImage(state, val) {
+            if (val) {
+                state.driverImage = val;
+            } else {
+                state.driverImage = {};
+            }
+        },
+        setTrackImages(state, val) {
+            if (val) {
+                state.trackImages = val;
+            } else {
+                state.trackImages = [];
+            }
+        },
+        setTrackImage(state, val) {
+            if (val) {
+                state.trackImage = val;
+            } else {
+                state.trackImage = {};
             }
         },
         setImageUrl(state, val) {
@@ -217,18 +355,18 @@ const images = {
                 state.logoUrl = null
             }
         },
-        setImageId(state, val) {
+        setDriverUrl(state, val) {
             if (val) {
-                state.imageId = val
+                state.driverImageUrl = val
             } else {
-                state.imageId = null
+                state.driverImageUrl = null;
             }
         },
-        setLogoId(state, val) {
+        setTrackUrl(state, val) {
             if (val) {
-                state.logoId = val
+                state.trackImageUrl = val
             } else {
-                state.logoId = null
+                state.trackImageUrl = null;
             }
         },
         setRequest(state, val) {
@@ -247,9 +385,6 @@ const images = {
         }
     },
     getters: {
-        getOptions(state) {
-            return state.options
-        },
         getImages(state) {
             return state.images
         },
@@ -262,20 +397,32 @@ const images = {
         getLogo(state) {
             return state.logo
         },
-        getRequest(state) {
-            return state.request
+        getDriverImages(state) {
+            return state.driverImages
+        },
+        getDriverImage(state) {
+            return state.driverImage
+        },
+        getTrackImages(state) {
+            return state.trackImages
+        },
+        getTrackImage(state) {
+            return state.trackImage
         },
         getImageUrl(state) {
             return state.imageUrl
         },
-        getImageId(state) {
-            return state.imageId
-        },
         getLogoUrl(state) {
             return state.logoUrl
         },
-        getLogoId(state) {
-            return state.logoId
+        getDriverUrl(state) {
+            return state.driverImageUrl
+        },
+        getTrackUrl(state) {
+            return state.trackImageUrl
+        },
+        getRequest(state) {
+            return state.request
         },
         confirmation(state) {
             return state.confirmation

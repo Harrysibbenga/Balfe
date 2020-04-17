@@ -4,6 +4,10 @@ import admin from './Modules/admin';
 import posts from './Modules/posts';
 import images from "./Modules/images";
 import partners from "./Modules/partners";
+import drivers from "./Modules/drivers";
+import calender from "./Modules/calender";
+import history from "./Modules/history";
+import gallery from "./Modules/gallery";
 
 Vue.use(Vuex);
 
@@ -12,6 +16,10 @@ export default new Vuex.Store({
         admin,
         posts,
         images,
-        partners
+        partners,
+        drivers,
+        calender,
+        history,
+        gallery
     }
 })

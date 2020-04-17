@@ -7,14 +7,14 @@ const posts = {
         post: null
     },
     mutations: {
-        getPosts(state, val) {
+        setPosts(state, val) {
             if (val) {
                 state.allPosts = val
             } else {
                 state.allPosts = []
             }
         },
-        getPost(state, val) {
+        setPost(state, val) {
             if (val) {
                 state.post = val;
             } else {
@@ -26,7 +26,7 @@ const posts = {
         }
     },
     actions: {
-        getPost({
+        setPost({
             commit
         }, id) {
             fb.postsCollection
@@ -34,10 +34,10 @@ const posts = {
                 .get()
                 .then(doc => {
                     let post = doc.data();
-                    commit("getPost", post);
+                    commit("setPost", post);
                 });
         },
-        getPosts({
+        setPosts({
             commit
         }) {
             fb.postsCollection.orderBy("date", "desc").onSnapshot(querySnapshot => {
@@ -48,7 +48,7 @@ const posts = {
                     post.id = doc.id;
                     postsArray.push(post);
                 });
-                commit("getPosts", postsArray)
+                commit("setPosts", postsArray)
             });
         }
     },
