@@ -44,6 +44,8 @@ const logosCollection = db.collection('logos');
 const videosCollection = db.collection('videos');
 const galleryCollection = db.collection('gallery');
 const tracksCollection = db.collection("tracks");
+const driversImagesCollection = db.collection("driver_images");
+const tracksImagesCollection = db.collection("track_images");
 
 export {
     db,
@@ -59,6 +61,8 @@ export {
     driversCollection,
     calenderRounds,
     imageUrlCollection,
+    driversImagesCollection,
+    tracksImagesCollection,
     logosCollection,
     partnersCollection,
     videosCollection,
