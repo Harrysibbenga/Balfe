@@ -58,7 +58,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -66,12 +65,17 @@ export default {
     };
   },
   computed: {
-    ...mapState(["drivers"])
+    drivers() {
+      return this.$store.getters["drivers/getDrivers"];
+    }
   },
   methods: {
     clickedDriver(driver) {
       this.currentDriver = driver;
     }
+  },
+  created: function() {
+    this.$store.dispatch("drivers/setDrivers");
   }
 };
 </script>
