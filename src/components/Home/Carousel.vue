@@ -54,46 +54,28 @@
       <!-- History -->
       <b-carousel-slide>
         <template v-slot:img>
-          <img class="d-block img-fluid w-100" width="2560" height="1250" src />
+          <img class="d-block img-fluid w-100" width="2560" height="1250" :src="history.image" alt />
           <div class="mask"></div>
           <div class="container-fluid mb-5 text-container text-center text-white">
             <div class="row">
               <div class="partner-logo col-12 col-md-12 col-lg-6">
-                <h1 class="h1"></h1>
-                <p class="excerpt"></p>
-                <p class="date"></p>
+                <h1 class="h1">{{ history.tilte }}</h1>
+                <p class="excerpt">{{ history.excerpt }}</p>
+                <p class="date">{{ history.date | formatDate}}</p>
               </div>
             </div>
             <div class="row">
               <div class="col-lg-6">
                 <div class="row">
                   <div class="col-6 p-0">
-                    <app-button type="link" :addClass="['btn-md']">View</app-button>
+                    <app-button
+                      type="link"
+                      :linkTo="`/history/${history.id}`"
+                      :addClass="['btn-md']"
+                    >View</app-button>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
-      </b-carousel-slide>
-
-      <!-- Partners -->
-      <b-carousel-slide>
-        <template v-slot:img>
-          <img class="d-block img-fluid w-100" width="2560" height="1250" src />
-          <div class="mask"></div>
-          <div class="container-fluid mb-5 text-container text-center text-white">
-            <div class="row">
-              <div class="partner-logo col-12 col-md-12 col-lg-6">
-                <h1 class="h1"></h1>
-                <p class="excerpt"></p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="row">
                   <div class="col-6 p-0">
-                    <app-button type="link" :addClass="['btn-md']">View</app-button>
+                    <app-button type="link" linkTo="news" :addClass="['btn-md']">View All</app-button>
                   </div>
                 </div>
               </div>
@@ -113,7 +95,9 @@ export default {
     return {
       slide: 0,
       sliding: null,
-      latestNews: null
+      latestNews: null,
+      history: null,
+      hist: true
     };
   },
   methods: {
@@ -122,6 +106,31 @@ export default {
     },
     onSlideEnd() {
       this.sliding = false;
+    },
+    latestNewsPost() {
+      fb.postsCollection
+        .orderBy("date", "desc")
+        .limit(1)
+        .onSnapshot(querySnapshot => {
+          let postsArray = [];
+          querySnapshot.forEach(doc => {
+            let post = doc.data();
+            post.id = doc.id;
+            postsArray.push(post);
+          });
+          this.latestNews = postsArray[0];
+        });
+    },
+    historicPost() {
+      this.$store.dispatch("history/setAllHistory");
+      let allPosts = this.$store.getters["history/getAllHistory"];
+      let rand = Math.floor(Math.random() * allPosts.length);
+      for (let i = 0; i < allPosts.length; i++) {
+        if (rand === i) {
+          this.history = allPosts[i];
+          this.hist = true;
+        }
+      }
     }
   },
   filters: {
@@ -141,18 +150,8 @@ export default {
     }
   },
   created() {
-    fb.postsCollection
-      .orderBy("date", "desc")
-      .limit(1)
-      .onSnapshot(querySnapshot => {
-        let postsArray = [];
-        querySnapshot.forEach(doc => {
-          let post = doc.data();
-          post.id = doc.id;
-          postsArray.push(post);
-        });
-        this.latestNews = postsArray[0];
-      });
+    this.latestNewsPost();
+    this.historicPost();
   }
 };
 </script>
