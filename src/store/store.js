@@ -8,6 +8,7 @@ import drivers from "./Modules/drivers";
 import calender from "./Modules/calender";
 import history from "./Modules/history";
 import gallery from "./Modules/gallery";
+import videos from "./Modules/videos";
 
 Vue.use(Vuex);
 
@@ -20,6 +21,7 @@ export default new Vuex.Store({
         drivers,
         calender,
         history,
-        gallery
+        gallery,
+        videos
     }
 })
