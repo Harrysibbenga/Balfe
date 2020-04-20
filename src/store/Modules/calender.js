@@ -53,12 +53,18 @@ const calender = {
             fb.calenderRounds
                 .orderBy("date")
                 .onSnapshot(querySnapshot => {
-                    let roundArray = [];
+                    let roundArray = [],
+                        now = new Date()
 
                     querySnapshot.forEach(doc => {
                         let round = doc.data();
                         round.id = doc.id;
                         roundArray.push(round);
+                        if (round.date.toDate() < now) {
+                            round.ongoing = false;
+                        } else {
+                            round.ongoing = true;
+                        }
                     });
                     commit("setAllRounds", roundArray);
                 });
