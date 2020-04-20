@@ -36,14 +36,14 @@
             </div>
           </div>
         </div>
-        <div id="driver-sec" class="col-md-12" v-else>
+        <div id="driver-sec" class="col-md-12" v-if="currentDriver == null">
           <div class="row no-gutters">
             <div class="col-md-6 view">
-              <img class="img-fluid" :src="drivers[0].image" />
+              <img class="img-fluid" :src="defultDriver.image" />
             </div>
             <div class="col-md-6">
               <div class="text-center">
-                <h3 class="name-title">{{ drivers[0].fullName }}</h3>
+                <h3 class="name-title">{{ defultDriver.fullName }}</h3>
               </div>
               <div class="container-fluid">
                 <h4 class>Career Highlight</h4>
@@ -67,6 +67,9 @@ export default {
   computed: {
     drivers() {
       return this.$store.getters["drivers/getDrivers"];
+    },
+    defultDriver() {
+      return this.$store.getters["drivers/getDrivers"][0];
     }
   },
   methods: {

@@ -126,10 +126,10 @@
           <img :src="track.image" v-if="newImage" class="img-fluid" />
         </div>
 
-        <b-button class="btn btn-outline-primary" @click="addNewImage($event)" value="track">+ Image</b-button>
+        <b-button class="btn btn-primary" @click="addNewImage($event)" value="track">+ Image</b-button>
 
         <b-button
-          class="btn btn-outline-primary ml-2"
+          class="btn btn-primary ml-2"
           @click="chooseImage($event)"
           value="track"
         >+ Select Image</b-button>
@@ -354,13 +354,15 @@ export default {
           date: this.round.date,
           trackId: this.trackId,
           trackName: this.trackName,
-          createdOn: new Date()
+          createdOn: new Date(),
+          image: this.trackImage
         })
         .then(() => {
           this.trackId = null;
           this.round.date = "";
           this.round.number = "";
           this.trackName = null;
+          this.trackImage = "";
           this.selectTrack.selected = null;
         })
         .catch(error => alert(error.message));
@@ -372,6 +374,7 @@ export default {
         .then(doc => {
           this.trackId = doc.id;
           this.trackName = doc.data().name;
+          this.trackImage = doc.data().image;
         })
         .catch(error => alert(error.message));
     },
@@ -388,6 +391,7 @@ export default {
         .get()
         .then(doc => {
           this.trackName = doc.data().name;
+          this.trackImage = doc.data().image;
         })
         .then(() => {
           fb.calenderRounds
@@ -397,7 +401,8 @@ export default {
               date: this.editForm.date,
               number: this.editForm.number,
               createdOn: new Date(),
-              trackName: this.trackName
+              trackName: this.trackName,
+              image: this.trackImage
             })
             .then(() => {
               this.editForm.date = "";
@@ -405,6 +410,8 @@ export default {
               this.selectTrack.selected = null;
               this.editDialog = false;
               this.editConf("rounds");
+              this.trackName = "";
+              this.trackImage = "";
             })
             .catch(err => {
               alert(err.message);

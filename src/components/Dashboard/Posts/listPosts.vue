@@ -126,10 +126,10 @@
           <img :src="post.image" v-if="newImage" class="img-fluid" />
         </div>
 
-        <b-button class="btn btn-outline-primary" @click="addNewImage($event)" value="post">+ Image</b-button>
+        <b-button class="btn btn-primary" @click="addNewImage($event)" value="post">+ Image</b-button>
 
         <b-button
-          class="btn btn-outline-primary ml-2"
+          class="btn btn-primary ml-2"
           @click="chooseImage($event)"
           value="post"
         >+ Select Image</b-button>
@@ -169,14 +169,10 @@
         <h4>Gallery images</h4>
 
         <div class="form-group">
-          <b-button
-            class="btn btn-outline-primary"
-            @click="addNewImage($event)"
-            value="gallery"
-          >+ Image</b-button>
+          <b-button class="btn btn-primary" @click="addNewImage($event)" value="gallery">+ Image</b-button>
 
           <b-button
-            class="btn btn-outline-primary ml-2"
+            class="btn btn-primary ml-2"
             @click="chooseImage($event)"
             value="gallery"
           >+ Select Images</b-button>
@@ -669,8 +665,8 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch("posts/getPosts");
-    this.$store.dispatch("images/getImages");
+    this.$store.dispatch("posts/setPosts");
+    this.$store.dispatch("images/setImages");
   }
 };
 </script>

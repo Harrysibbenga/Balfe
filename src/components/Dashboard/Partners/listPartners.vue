@@ -116,14 +116,10 @@
           <img :src="partner.logoUrl" v-if="newImage" class="img-fluid" />
         </div>
 
-        <b-button
-          class="btn btn-outline-primary"
-          @click="addNewImage($event)"
-          value="partner"
-        >+ Image</b-button>
+        <b-button class="btn btn-primary" @click="addNewImage($event)" value="partner">+ Image</b-button>
 
         <b-button
-          class="btn btn-outline-primary ml-2"
+          class="btn btn-primary ml-2"
           @click="chooseImage($event)"
           value="partner"
         >+ Select Image</b-button>

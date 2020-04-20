@@ -1,5 +1,5 @@
-<template>
-  <div id="news-sec" class="py-5 border-top border-bottom border-primary bg-white text-dark">
+<template >
+  <div>
     <h2 class="pl-3 pb-5 font-weight-bold">Latest News</h2>
     <div class="container-lg">
       <div class="row">

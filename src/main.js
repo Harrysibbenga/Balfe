@@ -24,7 +24,7 @@ Vue.use(wysiwyg, {});
 
 // Fetch user 
 fb.auth.onAuthStateChanged(user => {
-  store.dispatch('admin/fetchUser', user.user)
+  store.dispatch('admin/fetchUser', user)
 });
 
 // handle page reload

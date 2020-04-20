@@ -6,7 +6,7 @@
       <!-- Image upload section  -->
       <h4>Headline image</h4>
 
-      <b-button class="btn btn-outline-primary" @click="addNewImage($event)" value="post">+ Image</b-button>
+      <b-button class="btn btn-primary" @click="addNewImage($event)" value="post">+ Image</b-button>
 
       <!--/Image upload section  -->
       <div class="container">
@@ -62,13 +62,9 @@
       <h4>Gallery images</h4>
 
       <div class="form-group">
-        <b-button
-          class="btn btn-outline-primary"
-          @click="addNewImage($event)"
-          value="gallery"
-        >+ Image</b-button>
+        <b-button class="btn btn-primary" @click="addNewImage($event)" value="gallery">+ Image</b-button>
 
-        <b-button class="btn btn-outline-primary ml-2" @click="chooseImage">+ Select Images</b-button>
+        <b-button class="btn btn-primary ml-2" @click="chooseImage">+ Select Images</b-button>
       </div>
 
       <p class="text-success" v-if="confirmation">Image uploaded !</p>

@@ -1,5 +1,5 @@
 <template>
-  <div class="container text-left">
+  <div class="text-left">
     <h1 class="text-left">Drivers</h1>
     <hr class="balfe-line" />
     <b-form @submit.prevent="submitHandler">
@@ -13,15 +13,29 @@
         <img :src="driver.image" class="img-fluid" />
       </div>
 
-      <b-button class="btn btn-outline-primary" @click="addNewImage($event)" value="driver">+ Image</b-button>
+      <b-button class="btn btn-primary" @click="addNewImage($event)" value="driver">+ Image</b-button>
 
-      <b-form-group id="firstName" label="First name" label-for="firstName" class="text-left">
-        <b-input id="firstName" v-model.trim="driver.firstName" type="text"></b-input>
-      </b-form-group>
+      <div class="col-12 p-0">
+        <div class="row">
+          <b-form-group
+            id="firstName"
+            label="First name"
+            label-for="firstName"
+            class="text-left col-12 col-sm-6"
+          >
+            <b-input id="firstName" v-model.trim="driver.firstName" type="text"></b-input>
+          </b-form-group>
 
-      <b-form-group id="secondName" label="Second name" label-for="secondName" class="text-left">
-        <b-input id="secondName" v-model.trim="driver.secondName" type="text"></b-input>
-      </b-form-group>
+          <b-form-group
+            id="secondName"
+            label="Second name"
+            label-for="secondName"
+            class="text-left col-12 col-sm-6"
+          >
+            <b-input id="secondName" v-model.trim="driver.secondName" type="text"></b-input>
+          </b-form-group>
+        </div>
+      </div>
 
       <b-form-group id="career" label="Career" label-for="career" class="text-left">
         <wysiwyg id="career" v-model="driver.career"></wysiwyg>
@@ -152,14 +166,10 @@
           <img :src="driver.image" v-if="newImage" class="img-fluid" />
         </div>
 
-        <b-button
-          class="btn btn-outline-primary"
-          @click="addNewImage($event)"
-          value="driver"
-        >+ Image</b-button>
+        <b-button class="btn btn-primary" @click="addNewImage($event)" value="driver">+ Image</b-button>
 
         <b-button
-          class="btn btn-outline-primary ml-2"
+          class="btn btn-primary ml-2"
           @click="chooseImage($event)"
           value="driver"
         >+ Select Image</b-button>

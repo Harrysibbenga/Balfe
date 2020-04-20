@@ -126,14 +126,10 @@
           <img :src="history.image" v-if="newImage" class="img-fluid" />
         </div>
 
-        <b-button
-          class="btn btn-outline-primary"
-          @click="addNewImage($event)"
-          value="history"
-        >+ Image</b-button>
+        <b-button class="btn btn-primary" @click="addNewImage($event)" value="history">+ Image</b-button>
 
         <b-button
-          class="btn btn-outline-primary ml-2"
+          class="btn btn-primary ml-2"
           @click="chooseImage($event)"
           value="history"
         >+ Select Image</b-button>
@@ -173,14 +169,10 @@
         <h4>Gallery images</h4>
 
         <div class="form-group">
-          <b-button
-            class="btn btn-outline-primary"
-            @click="addNewImage($event)"
-            value="gallery"
-          >+ Image</b-button>
+          <b-button class="btn btn-primary" @click="addNewImage($event)" value="gallery">+ Image</b-button>
 
           <b-button
-            class="btn btn-outline-primary ml-2"
+            class="btn btn-primary ml-2"
             @click="chooseImage($event)"
             value="gallery"
           >+ Select Images</b-button>

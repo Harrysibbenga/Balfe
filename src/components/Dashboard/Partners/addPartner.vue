@@ -13,7 +13,7 @@
         <img :src="partner.logo" class="img-fluid" />
       </div>
 
-      <b-button class="btn btn-outline-primary" @click="addNewImage($event)" value="partner">+ Image</b-button>
+      <b-button class="btn btn-primary" @click="addNewImage($event)" value="partner">+ Image</b-button>
 
       <b-form-group id="name" label="Name" label-for="name" class="text-left">
         <b-input
