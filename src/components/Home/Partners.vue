@@ -8,8 +8,8 @@
         </div>
       </div>
     </div>
-    <h3 class="text-center pb-5">{{ activePartner.name }}</h3>
     <div id="partner-display" class="container" v-if="activePartner">
+      <h3 class="text-center pb-5">{{ activePartner.name }}</h3>
       <div class="col-12 p-0">
         <div class="row">
           <div id="partner-logo-cont" class="col-12 col-sm-6">
@@ -23,11 +23,13 @@
 </template>
 
 <script>
+const fb = require("../../firebaseConfig");
 export default {
   data() {
     return {
-      activePartner: {},
-      partnerId: null
+      activePartner: false,
+      partnerId: null,
+      partnerView: {}
     };
   },
   computed: {
@@ -39,20 +41,26 @@ export default {
     clickedPartner(partner) {
       this.activePartner = partner;
     },
-    randomPartner(partners) {
-      let rand = Math.floor(Math.random() * partners.length);
-      console.log(rand);
-      for (let i = 0; i < partners.length; i++) {
-        if (rand == i) {
-          this.activePartner = partners[i];
-        }
-      }
+    randomPartner() {
+      fb.partnersCollection
+        .orderBy("name")
+        .get()
+        .then(docs => {
+          let allPartners = [];
+          docs.forEach(doc => {
+            let partner = doc.data();
+            partner.id = doc.id;
+            allPartners.push(partner);
+          });
+          let rand = Math.floor(Math.random() * allPartners.length);
+          this.activePartner = allPartners[rand];
+        });
     }
   },
   created: function() {
     this.$store.dispatch("partners/setPartners");
-    let partners = this.$store.getters["partners/getPartners"];
-    this.randomPartner(partners);
-  }
+    this.randomPartner();
+  },
+  mounted() {}
 };
 </script>
