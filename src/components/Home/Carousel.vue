@@ -1,90 +1,82 @@
 <template>
-  <div>
-    <b-carousel
-      id="carousel-intro"
-      v-model="slide"
-      :interval="3000"
-      background="black"
-      width="2560"
-      height="1250"
-      @sliding-start="onSlideStart"
-      @sliding-end="onSlideEnd"
-      fade
-      no-hover-pause
-    >
-      <!-- Latest article -->
-      <b-carousel-slide>
-        <template v-slot:img>
-          <img
-            class="d-block img-fluid w-100"
-            width="2560"
-            height="1250"
-            :src="latestNews.image"
-            alt
-          />
-          <div class="mask"></div>
-          <div class="container-fluid mb-5 text-container text-center text-white">
-            <div class="row">
-              <div class="partner-logo col-12 col-md-12 col-lg-6">
-                <h1 class="h1">{{ latestNews.tilte }}</h1>
-                <p class="excerpt">{{ latestNews.excerpt }}</p>
-                <p class="date">{{ latestNews.date | formatDate}}</p>
-              </div>
+  <b-carousel
+    id="carousel-head"
+    v-model="slide"
+    :interval="3000"
+    background="black"
+    width="2560"
+    height="1250"
+    @sliding-start="onSlideStart"
+    @sliding-end="onSlideEnd"
+    fade
+    no-hover-pause
+  >
+    <!-- Latest article -->
+    <b-carousel-slide>
+      <template v-slot:img>
+        <img class="d-block img-fluid w-100" width="2560" height="1250" alt :src="latestNews.image" />
+        <div class="mask"></div>
+        <div class="container-fluid mb-5 text-container text-center text-white">
+          <div class="row">
+            <div class="partner-logo col-12 col-md-12 col-lg-6">
+              <h1 class="h1">{{ latestNews.title }}</h1>
+              <p class="excerpt">{{ latestNews.excerpt }}</p>
+              <p class="date">{{ latestNews.date | formatDate}}</p>
             </div>
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="row">
-                  <div class="col-6 p-0">
-                    <app-button
-                      type="link"
-                      :linkTo="`/post/${latestNews.id}`"
-                      :addClass="['btn-md']"
-                    >View</app-button>
-                  </div>
-                  <div class="col-6 p-0">
-                    <app-button type="link" linkTo="news" :addClass="['btn-md']">View All</app-button>
-                  </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="row">
+                <div class="col-6 p-0">
+                  <app-button
+                    type="link"
+                    :linkTo="`/post/${latestNews.id}`"
+                    :addClass="['btn-md']"
+                  >View</app-button>
+                </div>
+                <div class="col-6 p-0">
+                  <app-button type="link" linkTo="news" :addClass="['btn-md']">View All</app-button>
                 </div>
               </div>
             </div>
           </div>
-        </template>
-      </b-carousel-slide>
+        </div>
+      </template>
+    </b-carousel-slide>
 
-      <!-- History -->
-      <b-carousel-slide>
-        <template v-slot:img>
-          <img class="d-block img-fluid w-100" width="2560" height="1250" :src="history.image" alt />
-          <div class="mask"></div>
-          <div class="container-fluid mb-5 text-container text-center text-white">
-            <div class="row">
-              <div class="partner-logo col-12 col-md-12 col-lg-6">
-                <h1 class="h1">{{ history.tilte }}</h1>
-                <p class="excerpt">{{ history.excerpt }}</p>
-                <p class="date">{{ history.date | formatDate}}</p>
-              </div>
+    <!-- History -->
+    <b-carousel-slide>
+      <template v-slot:img>
+        <img class="d-block img-fluid w-100" width="2560" height="1250" :src="history.image" alt />
+        <div class="mask"></div>
+        <div class="container-fluid mb-5 text-container text-center text-white">
+          <div class="row">
+            <div class="partner-logo col-12 col-md-12 col-lg-6">
+              <h1 class="h1">{{ history.title }}</h1>
+              <p class="excerpt">{{ history.excerpt }}</p>
+              <p class="date">{{ history.date | formatDate}}</p>
             </div>
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="row">
-                  <div class="col-6 p-0">
-                    <app-button
-                      type="link"
-                      :linkTo="`/history/${history.id}`"
-                      :addClass="['btn-md']"
-                    >View</app-button>
-                  </div>
-                  <div class="col-6 p-0">
-                    <app-button type="link" linkTo="news" :addClass="['btn-md']">View All</app-button>
-                  </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="row">
+                <div class="col-6 p-0">
+                  <app-button
+                    type="link"
+                    :linkTo="`/history/${history.id}`"
+                    :addClass="['btn-md']"
+                  >View</app-button>
+                </div>
+                <div class="col-6 p-0">
+                  <app-button type="link" linkTo="news" :addClass="['btn-md']">View All</app-button>
                 </div>
               </div>
             </div>
           </div>
-        </template>
-      </b-carousel-slide>
-    </b-carousel>
-  </div>
+        </div>
+      </template>
+    </b-carousel-slide>
+  </b-carousel>
 </template>
 
 <script>
@@ -94,10 +86,9 @@ export default {
   data() {
     return {
       slide: 0,
-      sliding: null,
-      latestNews: null,
-      history: null,
-      hist: true
+      sliding: false,
+      latestNews: [],
+      history: []
     };
   },
   methods: {
@@ -107,30 +98,33 @@ export default {
     onSlideEnd() {
       this.sliding = false;
     },
-    latestNewsPost() {
+    setPosts() {
+      fb.historicCollection
+        .orderBy("date", "desc")
+        .get()
+        .then(docs => {
+          let postsArray = [];
+          docs.forEach(doc => {
+            let post = doc.data();
+            post.id = doc.id;
+            postsArray.push(post);
+          });
+          let rand = Math.floor(Math.random() * postsArray.length);
+          this.history = postsArray[rand];
+        });
+
       fb.postsCollection
         .orderBy("date", "desc")
         .limit(1)
-        .onSnapshot(querySnapshot => {
+        .onSnapshot(docs => {
           let postsArray = [];
-          querySnapshot.forEach(doc => {
+          docs.forEach(doc => {
             let post = doc.data();
             post.id = doc.id;
             postsArray.push(post);
           });
           this.latestNews = postsArray[0];
         });
-    },
-    historicPost() {
-      this.$store.dispatch("history/setAllHistory");
-      let allPosts = this.$store.getters["history/getAllHistory"];
-      let rand = Math.floor(Math.random() * allPosts.length);
-      for (let i = 0; i < allPosts.length; i++) {
-        if (rand === i) {
-          this.history = allPosts[i];
-          this.hist = true;
-        }
-      }
     }
   },
   filters: {
@@ -150,8 +144,7 @@ export default {
     }
   },
   created() {
-    this.latestNewsPost();
-    this.historicPost();
+    this.setPosts();
   }
 };
 </script>
