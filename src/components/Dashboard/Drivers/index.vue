@@ -337,7 +337,7 @@ export default {
             this.driverAdded = null;
           }, 3000);
         })
-        .catch(error => console.log("create driver ", error.message));
+        .catch(error => error.message);
     },
     submitHandler() {
       this.createDriver();
