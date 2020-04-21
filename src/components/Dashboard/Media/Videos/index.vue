@@ -3,33 +3,16 @@
     <h1 class="text-left">Videos</h1>
     <hr class="balfe-line" />
     <div v-if="videos.length > 0">
-      <table class="table table-striped table-hover text-left">
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Video</th>
-            <th scope="col">Uploaded</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(video, index) in videos" :key="index">
-            <th scope="row">{{ video.name }}</th>
-            <td>
-              <img :src="video.url" class="img-fluid" />
-            </td>
-            <td>{{ video.createdOn | formatCreation }}</td>
-            <td>
-              <div
-                class="d-inline px-1 text-primary"
-                @click="deleteVideo(video)"
-              >
-                Delete
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="row">
+        <div class="col-6 col-md-4 col-lg-2" v-for="(video, index) in videos" :key="index">
+          <img :src="video.url" class="img-fluid" />
+          <p scope="row">{{ video.name }}</p>
+          <div class="d-block">
+            <p class="d-inline">Uploaded: {{ video.createdOn | formatCreation }}</p>
+            <div class="d-inline pl-2 text-primary" @click="deleteVideo(video)">Delete</div>
+          </div>
+        </div>
+      </div>
     </div>
     <div v-else>Sorry no videos yet .......... Add some!</div>
     <b-modal v-model="deleteDialog" hide-footer hide-header centered>
@@ -38,16 +21,13 @@
       </div>
       <div class="d-block text-right pt-3">
         <b-button class="mr-2" @click="deleteOnConfirm">Yes, delete</b-button>
-        <b-button variant="primary" @click="deleteOnCancel"
-          >No, do not delete it</b-button
-        >
+        <b-button variant="primary" @click="deleteOnCancel">No, do not delete it</b-button>
       </div>
     </b-modal>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
 import moment from "moment";
 const fb = require("../../../../firebaseConfig");
 
@@ -60,7 +40,9 @@ export default {
     };
   },
   computed: {
-    ...mapState(["videos"])
+    videos() {
+      return this.$store.getters["videos/getAllVideos"];
+    }
   },
   methods: {
     deleteVideo(video) {
@@ -90,6 +72,9 @@ export default {
       let date = val.toDate();
       return moment(date).format("MMMM Do YYYY");
     }
+  },
+  created() {
+    this.$store.dispatch("videos/setAllVideos");
   }
 };
 </script>

@@ -1,180 +1,211 @@
 <template>
   <div>
     <h1 class="text-left">Gallery</h1>
-    <b-modal v-model="inputImage" hide-footer hide-header centered>
-      <transition name="fade">
-        <div v-if="performingRequest" class="loading">
-          <p class="text-dark">Loading...</p>
-        </div>
-      </transition>
-      <b-form @submit.prevent>
-        <div class="input_field">
-          <input
-            type="file"
-            @change="uploadImage"
-            ref="fileInput"
-            accept="image/*"
-          />
-        </div>
-      </b-form>
-      <div class="d-block text-right pt-3">
-        <b-button
-          class="mr-2"
-          @click="confirmImageAdd"
-          :disabled="newImage.name == ''"
-          >Add</b-button
-        >
-      </div>
-    </b-modal>
-
-    <b-modal v-model="inputVideo" hide-footer hide-header centered>
-      <transition name="fade">
-        <div v-if="performingRequest" class="loading">
-          <p class="text-dark">Loading...</p>
-        </div>
-      </transition>
-      <b-form @submit.prevent>
-        <div class="input_field">
-          <input
-            type="file"
-            @change="uploadVideo"
-            ref="fileInput"
-            accept="image/*"
-          />
-        </div>
-      </b-form>
-      <div class="d-block text-right pt-3">
-        <b-button
-          class="mr-2"
-          @click="confirmVideoAdd"
-          :disabled="newVideo.name == ''"
-          >Add</b-button
-        >
-      </div>
-    </b-modal>
 
     <b-nav tabs>
-      <b-nav-item @click="addNewImage">New image</b-nav-item>
-      <b-nav-item @click="addNewVideo">New video</b-nav-item>
+      <b-button class="btn btn-primary mx-1" @click="addNew($event)" value="image">New image</b-button>
+
+      <b-button
+        class="btn btn-primary mx-1"
+        @click="chooseContent($event)"
+        value="image"
+      >Select image</b-button>
+
+      <b-button class="btn btn-primary mx-1" @click="addNew($event)" value="video">New video</b-button>
+
+      <b-button
+        class="btn btn-primary mx-1"
+        @click="chooseContent($event)"
+        value="video"
+        v
+      >Select video</b-button>
     </b-nav>
 
-    <div v-if="selectImage.selected">
-      <img :src="selectImage.selectedUrl" class="mt-3 img-fluid" />
-    </div>
-    <div v-if="selectVideo.selected">
-      <b-embed
-        type="iframe"
-        aspect="16by9"
-        :src="selectVideo.selectedUrl"
-        allowfullscreen
-      ></b-embed>
-    </div>
-    <div class="row">
-      <div class="col-6">
-        <b-form-select
-          v-model="type"
-          @change="typeChange"
-          size="sm"
-          class="mt-3"
+    <!-- gallery images  -->
+    <div v-if="galleryContent.length > 0" class="container-fluid">
+      <h5 class="mt-3">Gallery Content</h5>
+      <div class="row">
+        <div
+          class="col-6 col-md-4 col-lg-2"
+          v-for="(content, index) in galleryContent"
+          :key="index"
         >
-          <b-form-select-option :value="null" disabled
-            >-- Please select type --</b-form-select-option
-          >
-          <b-form-select-option value="image">Image</b-form-select-option>
-          <b-form-select-option value="video">Video</b-form-select-option>
-        </b-form-select>
-      </div>
-      <div class="col-6">
-        <div v-if="type == 'image'">
-          <b-form-select
-            v-model="selectImage.selected"
-            :options="options"
-            size="sm"
-            class="mt-3"
-            @change="selectI"
-          >
-            <template v-slot:first>
-              <b-form-select-option :value="null" disabled
-                >-- Please select an image --</b-form-select-option
-              >
-            </template>
-          </b-form-select>
-          <div class="d-block text-right pt-3">
-            <b-button
-              variant="primary"
-              :disabled="selectImage.selected == null"
-              @click="addImage(image)"
-              >Add image</b-button
-            >
+          <img :src="content.url" class="img-fluid" v-if="content.imageId" />
+          <b-embed
+            type="iframe"
+            aspect="16by9"
+            :src="content.url"
+            allowfullscreen
+            v-if="content.videoId"
+          ></b-embed>
+
+          <p scope="row">{{ content.name }}</p>
+          <div class="d-block">
+            <p class="d-inline">Uploaded: {{ content.createdOn | formatCreation }}</p>
+            <div class="d-inline px-1 text-primary" @click="removeContent(content)">Remove</div>
           </div>
         </div>
-        <div v-if="type == 'video'">
-          <b-form-select
-            v-model="selectVideo.selected"
-            :options="videoOptions"
-            size="sm"
-            class="mt-3"
-            @change="selectV"
-          >
-            <template v-slot:first>
-              <b-form-select-option :value="null" disabled
-                >-- Please select a video --</b-form-select-option
-              >
-            </template>
-          </b-form-select>
-          <div class="d-block text-right pt-3">
-            <b-button
-              variant="primary"
-              :disabled="selectVideo.selected == null"
-              @click="addVideo(video)"
-              >Add video</b-button
-            >
-          </div>
+      </div>
+    </div>
+    <div v-else>
+      <p class="text-left">Please select content to be displayed in the gallery or add some</p>
+    </div>
+    <!-- gallery images  -->
+
+    <!-- Modals  -->
+    <!-- New content modal  -->
+    <b-modal
+      v-model="newUpload"
+      hide-header
+      hide-footer
+      centered
+      no-close-on-backdrop
+      hide-header-close
+      no-close-on-esc
+      size="xl"
+    >
+      <h5 v-if="input == 'image'">Upload a new image</h5>
+      <h5 v-if="input == 'video'">Upload a new video</h5>
+
+      <transition name="fade">
+        <div v-if="imageRequest" class="loading">
+          <p class="text-dark">Loading...</p>
+        </div>
+      </transition>
+
+      <transition name="fade">
+        <div v-if="videoRequest" class="loading">
+          <p class="text-dark">Loading...</p>
+        </div>
+      </transition>
+
+      <div class="container">
+        <div v-if="imageUrl">
+          <img :src="imageUrl" class="img-fluid" />
+        </div>
+
+        <div v-if="videoUrl">
+          <b-embed type="iframe" aspect="16by9" :src="videoUrl" allowfullscreen></b-embed>
         </div>
       </div>
 
-      <div v-if="galleryContent.length > 0">
-        <table class="table table-striped table-hover text-left">
-          <thead>
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Content</th>
-              <th scope="col">Uploaded</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(content, index) in galleryContent" :key="index">
-              <th scope="row">{{ content.name }}</th>
-              <td>
-                <img :src="content.url" class="img-fluid" />
-              </td>
-              <td>{{ content.createdOn | formatCreation }}</td>
-              <td>
-                <div
-                  class="d-inline px-1 text-primary"
-                  @click="removeContent(content)"
-                >
-                  Remove
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <input
+        type="file"
+        @change="checkFile"
+        ref="imageInput"
+        accept="image/*"
+        v-if="input == 'image'"
+      />
+
+      <input
+        type="file"
+        @change="checkFile"
+        ref="videoInput"
+        accept="video/*"
+        v-if="input == 'video'"
+      />
+
+      <div class="d-block text-right pt-3">
+        <b-button class="mr-2" @click="close">Close</b-button>
       </div>
-      <div v-else>
-        <p class="text-left">
-          Please select content to be displayed in the gallery or add some
-        </p>
+
+      <p class="text-success" v-if="videoConfirm">Video uploaded sucsessfully!</p>
+      <p class="text-success" v-if="imageConfirm">Image uploaded sucsessfully!</p>
+    </b-modal>
+    <!-- New content modal  -->
+    <!-- User Prompt  -->
+    <b-modal
+      v-model="userPrompt"
+      hide-header
+      hide-footer
+      centered
+      no-close-on-backdrop
+      hide-header-close
+      no-close-on-esc
+      size="xl"
+    >
+      <h5 v-if="input == 'image'">Duplicate image</h5>
+      <h5 v-if="input == 'video'">Duplicate video</h5>
+
+      <div class="container" v-if="input == 'image'">
+        <img :src="imageUrl" class="img-fluid" />
       </div>
-    </div>
+
+      <div class="container" v-if="input == 'video'">
+        <b-embed type="iframe" aspect="16by9" :src="videoUrl" allowfullscreen></b-embed>
+      </div>
+
+      <p>Duplicate content would you like to use this ?</p>
+
+      <div class="d-block text-right pt-3">
+        <b-button class="mr-2" @click="confirm">Yes</b-button>
+        <b-button class="mr-2" @click="decline">No</b-button>
+      </div>
+    </b-modal>
+    <!-- User Prompt  -->
+    <!-- Select images -->
+    <b-modal
+      v-model="imageChoice"
+      hide-header
+      hide-footer
+      centered
+      no-close-on-backdrop
+      hide-header-close
+      no-close-on-esc
+      size="xl"
+    >
+      <b-form-group label="Images">
+        <b-form-checkbox-group id="checkbox" v-model="selected" name="Images">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-4" v-for="(image, index) in images" :key="index">
+                <img class="img-fluid" :src="image.url" />
+                <b-form-checkbox :value="image.id" class="mx-auto"></b-form-checkbox>
+              </div>
+            </div>
+          </div>
+        </b-form-checkbox-group>
+      </b-form-group>
+      <b-button class="mr-2 text-left" @click="confirmSelection">Confirm</b-button>
+      <b-button class="mr-2 text-left" @click="closeSel">Close</b-button>
+    </b-modal>
+    <!-- Select images  -->
+
+    <!-- Select videos -->
+    <b-modal
+      v-model="videoChoice"
+      hide-header
+      hide-footer
+      centered
+      no-close-on-backdrop
+      hide-header-close
+      no-close-on-esc
+      size="xl"
+    >
+      <b-form-group label="Videos">
+        <b-form-checkbox-group id="checkbox" v-model="selected" name="Videos">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-4" v-for="(video, index) in videos" :key="index">
+                <b-embed type="iframe" aspect="16by9" :src="video.url" allowfullscreen></b-embed>
+                <b-form-checkbox :value="video.id" class="mx-auto"></b-form-checkbox>
+              </div>
+            </div>
+          </div>
+        </b-form-checkbox-group>
+      </b-form-group>
+      <b-button class="mr-2 text-left" @click="confirmSelection">Confirm</b-button>
+      <b-button class="mr-2 text-left" @click="closeSel">Close</b-button>
+    </b-modal>
+    <!-- Select videos  -->
+    <!-- Modals  -->
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
 import moment from "moment";
 const fb = require("../../../../firebaseConfig");
+
 export default {
   data() {
     return {
@@ -182,93 +213,34 @@ export default {
       imageId: null,
       video: [],
       videoId: null,
-      selectImage: {
-        selected: null,
-        selectedUrl: null
-      },
-      selectVideo: {
-        selected: null,
-        selectedUrl: null
-      },
-      type: null,
-      inputImage: false,
-      inputVideo: false,
-      newImage: {
-        name: "",
-        url: ""
-      },
-      newVideo: {
-        name: "",
-        url: ""
-      },
-      performingRequest: false
+      newUpload: null,
+      userPrompt: null,
+      input: null,
+      selected: [],
+      videoChoice: false,
+      imageChoice: false
     };
   },
   methods: {
-    typeChange(type) {
-      this.type = type;
-    },
-    selectV(id) {
-      this.selectImage.selected = null;
-      fb.videoCollection
-        .doc(id)
-        .get()
-        .then(doc => {
-          let video = doc.data();
-          this.videoId = doc.id;
-          this.selectVideo.selectedUrl = video.url;
-          this.video = video;
-        })
-        .catch(err => {
-          err;
-        });
-    },
-    selectI(id) {
-      this.selectVideo.selected = null;
-      fb.imageUrlCollection
-        .doc(id)
-        .get()
-        .then(doc => {
-          let image = doc.data();
-          this.imageId = doc.id;
-          this.selectImage.selectedUrl = image.url;
-          this.image = image;
-        })
-        .catch(err => {
-          err;
-        });
-    },
-    addVideo(video) {
+    addVideo(video, id) {
       fb.galleryCollection
         .add({
           createdOn: new Date(),
           url: video.url,
           name: video.name,
-          videoId: this.videoId
-        })
-        .then(() => {
-          this.video = [];
-          this.videoId = null;
-          this.selectVideo.selected = null;
-          this.selectVideo.selectedUrl = null;
+          videoId: id
         })
         .catch(err => {
           err;
         });
     },
-    addImage(image) {
+    addImage(image, id) {
       fb.galleryCollection
         .add({
           createdOn: new Date(),
           url: image.url,
           name: image.name,
-          imageId: this.imageId
-        })
-        .then(() => {
-          this.image = [];
-          this.imageId = null;
-          this.selectImage.selected = null;
-          this.selectImage.selectedUrl = null;
+          imageId: id
         })
         .catch(err => {
           err;
@@ -277,145 +249,215 @@ export default {
     removeContent(content) {
       fb.galleryCollection.doc(content.id).delete();
     },
-    addNewImage() {
-      this.inputImage = true;
+    // adding a new
+    addNew(event) {
+      if (event.target.value == "image") {
+        this.newUpload = true;
+        this.input = "image";
+      } else if (event.target.value == "video") {
+        this.newUpload = true;
+        this.input = "video";
+      }
     },
-    confirmImageAdd() {
-      fb.imageUrlCollection
-        .where("name", "==", this.newImage.name)
-        .get()
-        .then(() => {
-          this.imageId = true;
-        })
-        .then(() => {
-          fb.galleryCollection
-            .add({
-              createdOn: new Date(),
-              url: this.newImage.url,
-              name: this.newImage.name,
-              imageId: this.imageId
+    //check the file to see if it exists
+    checkFile(event) {
+      let file = event.target.files[0];
+      let exist = false;
+      if (this.input == "image") {
+        fb.imageUrlCollection
+          .where("name", "==", file.name)
+          .get()
+          .then(docs => {
+            docs.forEach(doc => {
+              if (doc.exists) {
+                exist = true;
+                this.image = doc.data().url;
+                this.imageId = doc.id;
+                this.userPrompt = true;
+                this.$store.commit("images/setImageUrl", doc.data().url);
+                return;
+              }
+            });
+          })
+          .then(() => {
+            if (!exist) {
+              this.$store.dispatch("images/uploadImage", file);
+            }
+          });
+      } else if (this.input == "video") {
+        fb.videosCollection
+          .where("name", "==", file.name)
+          .get()
+          .then(docs => {
+            docs.forEach(doc => {
+              if (doc.exists) {
+                exist = true;
+                this.video = doc.data().url;
+                this.videoId = doc.id;
+                this.userPrompt = true;
+                this.$store.commit("videos/setVideoUrl", doc.data().url);
+                return;
+              }
+            });
+          })
+          .then(() => {
+            if (!exist) {
+              this.$store.dispatch("videos/uploadVideo", file);
+            }
+          });
+      }
+    },
+    // prompt user that image exists
+    decline() {
+      if (this.input == "image") {
+        this.userPrompt = false;
+        this.$store.commit("images/setImageUrl", null);
+        this.imageId = null;
+        this.$refs.imageInput.value = "";
+        this.image = null;
+        this.input == "";
+      } else if (this.input == "video") {
+        this.userPrompt = false;
+        this.videoId = null;
+        this.$refs.videoInput.value = "";
+        this.input == "";
+        this.video = null;
+        this.$store.commit("videos/setVideoUrl", null);
+      }
+    },
+    confirm() {
+      if (this.input == "image") {
+        this.addImage(this.image, this.imageId);
+        this.userPrompt = false;
+        this.$refs.imageInput.value = "";
+        this.newUpload = false;
+        this.$store.commit("images/setImageUrl", null);
+        this.input = "";
+      } else if (this.input == "video") {
+        this.addVideo(this.video, this.videoId);
+        this.userPrompt = false;
+        this.$refs.videoInput.value = "";
+        this.newUpload = false;
+        this.$store.commit("videos/setVideoUrl", null);
+        this.input = "";
+      }
+    },
+    close() {
+      if (this.input == "image") {
+        this.newUpload = false;
+        this.$refs.imageInput.value = "";
+        let url = this.$store.getters["images/getImageUrl"];
+        fb.imageUrlCollection
+          .where("url", "==", url)
+          .get()
+          .then(docs => {
+            docs.forEach(doc => {
+              let image = doc.data();
+              let imageId = doc.id;
+              this.addImage(image, imageId);
+            });
+          })
+          .then(() => {
+            this.$store.commit("images/setImageUrl", null);
+            this.input = "";
+          });
+      } else if (this.input == "video") {
+        this.newUpload = false;
+        this.$refs.imageInput.value = "";
+        let url = this.$store.getters["videos/getVideoUrl"];
+        fb.videosCollection
+          .where("url", "==", url)
+          .get()
+          .then(docs => {
+            docs.forEach(doc => {
+              let video = doc.data();
+              let videoId = doc.id;
+              this.addVideo(video, videoId);
+            });
+          })
+          .then(() => {
+            this.$store.commit("videos/getVideoUrl", null);
+            this.input = "";
+          });
+      }
+    },
+    // select image
+    chooseContent(event) {
+      if (event.target.value == "image") {
+        this.imageChoice = true;
+      } else if (event.target.value == "video") {
+        this.videoChoice = true;
+      }
+    },
+    confirmSelection() {
+      if (this.imageChoice) {
+        for (let i = 0; i < this.selected.length; i++) {
+          fb.imageUrlCollection
+            .doc(this.selected[i])
+            .get()
+            .then(doc => {
+              let image = doc.data();
+              image.id = doc.id;
+              this.addImage(image, image.id);
             })
             .then(() => {
-              this.confirmImg = true;
-              setTimeout(() => {
-                this.confirmImg = false;
-              }, 3000);
-              this.inputImage = false;
-              this.newImage.name = "";
-              this.newImage.url = "";
-              this.imageId = null;
-            })
-            .catch(err => {
-              err;
+              this.imageChoice = false;
             });
-        });
-    },
-    addNewVideo() {
-      this.inputVideo = true;
-    },
-    confirmVideoAdd() {
-      fb.videosCollection
-        .where("name", "==", this.newVideo.name)
-        .get()
-        .then(() => {
-          this.videoId = true;
-        })
-        .then(() => {
-          fb.galleryCollection
-            .add({
-              createdOn: new Date(),
-              url: this.newVideo.url,
-              name: this.newVideo.name,
-              videoId: this.videoId
+        }
+      } else if (this.videoChoice) {
+        for (let i = 0; i < this.selected.length; i++) {
+          fb.videosCollection
+            .doc(this.selected[i])
+            .get()
+            .then(doc => {
+              let video = doc.data();
+              video.id = doc.id;
+              this.addVideo(video, video.id);
             })
             .then(() => {
-              this.confirmVid = true;
-              setTimeout(() => {
-                this.confirmVid = false;
-              }, 3000);
-              this.inputVid = false;
-              this.newVideo.name = "";
-              this.newVideo.url = "";
-              this.videoId = null;
-            })
-            .catch(err => {
-              err;
+              this.videoChoice = false;
             });
-        });
-    },
-    uploadVideo(event) {
-      let file = event.target.files[0];
-      let storageRef = fb.storage.ref("videos/" + file.name);
-      let uploadTask = storageRef.put(file);
-      this.performingRequest = true;
-      uploadTask.on(
-        "state_changed",
-        () => {
-          // snapshot
-        },
-        () => {
-          // Handle unsuccessful uploads
-        },
-        () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-            this.newVideo.url = downloadURL;
-            this.newVideo.name = file.name;
-            fb.videosCollection
-              .add({
-                name: file.name,
-                createdOn: new Date(),
-                url: downloadURL
-              })
-              .then(() => {
-                this.performingRequest = false;
-              })
-              .catch(err => {
-                err;
-              });
-          });
         }
-      );
+      }
     },
-    uploadImage(event) {
-      let file = event.target.files[0];
-      let storageRef = fb.storage.ref("images/" + file.name);
-      let uploadTask = storageRef.put(file);
-      this.performingRequest = true;
-      uploadTask.on(
-        "state_changed",
-        () => {
-          // snapshot
-        },
-        () => {
-          // Handle unsuccessful uploads
-        },
-        () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-            this.newImage.name = file.name;
-            this.newImage.url = downloadURL;
-            fb.imageUrlCollection
-              .add({
-                name: file.name,
-                createdOn: new Date(),
-                url: downloadURL
-              })
-              .then(() => {
-                this.performingRequest = false;
-              })
-              .catch(err => {
-                err;
-              });
-          });
-        }
-      );
+    closeSel() {
+      if (this.imageChoice) {
+        this.selected = [];
+        this.imageChoice = false;
+      } else if (this.videoChoice) {
+        this.videoChoice = false;
+        this.selected = [];
+      }
     }
   },
   computed: {
-    ...mapState(["options", "videoOptions", "galleryContent"])
+    galleryContent() {
+      return this.$store.getters["gallery/getGallery"];
+    },
+    imageUrl() {
+      return this.$store.getters["images/getImageUrl"];
+    },
+    videoUrl() {
+      return this.$store.getters["video/getVideoUrl"];
+    },
+    imageRequest() {
+      return this.$store.getters["images/getRequest"];
+    },
+    videoRequest() {
+      return this.$store.getters["videos/getRequest"];
+    },
+    imageConfirm() {
+      return this.$store.getters["images/confirmation"];
+    },
+    videoConfirm() {
+      return this.$store.getters["videos/confirmation"];
+    },
+    images() {
+      return this.$store.getters["images/getImages"];
+    },
+    videos() {
+      return this.$store.getters["videos/getAllVideos"];
+    }
   },
   filters: {
     formatCreation(val) {
@@ -425,6 +467,11 @@ export default {
       let date = val.toDate();
       return moment(date).fromNow();
     }
+  },
+  created() {
+    this.$store.dispatch("gallery/setGallery");
+    this.$store.dispatch("images/setImages");
+    this.$store.dispatch("videos/setAllVideos");
   }
 };
 </script>

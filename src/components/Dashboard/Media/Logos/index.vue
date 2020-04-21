@@ -3,31 +3,16 @@
     <h1 class="text-left">Logos</h1>
     <hr class="balfe-line" />
     <div v-if="logos.length > 0">
-      <table class="table table-striped table-hover text-left">
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Logo</th>
-            <th scope="col">Uploaded</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr v-for="(logo, index) in logos" :key="index">
-            <th scope="row">{{ logo.name }}</th>
-            <td>
-              <img :src="logo.url" class="img-fluid" />
-            </td>
-            <td>{{ logo.createdOn | formatCreation }}</td>
-            <td>
-              <div class="d-inline px-1 text-primary" @click="deleteLogo(logo)">
-                Delete
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="row">
+        <div class="col-6 col-md-4 col-lg-2" v-for="(logo, index) in logos" :key="index">
+          <img :src="logo.url" class="img-fluid" />
+          <p scope="row">{{ logo.name }}</p>
+          <div class="d-block">
+            <p class="d-inline">Uploaded: {{ logo.createdOn | formatCreation }}</p>
+            <div class="d-inline pl-2 text-primary" @click="deleteLogo(logo)">Delete</div>
+          </div>
+        </div>
+      </div>
     </div>
     <div v-else>Sorry no logos yet .......... Add some!</div>
     <b-modal v-model="deleteDialog" hide-footer hide-header centered>
@@ -39,16 +24,13 @@
       </div>
       <div class="d-block text-right pt-3">
         <b-button class="mr-2" @click="deleteOnConfirm">Yes, delete</b-button>
-        <b-button variant="primary" @click="deleteOnCancel"
-          >No, do not delete it</b-button
-        >
+        <b-button variant="primary" @click="deleteOnCancel">No, do not delete it</b-button>
       </div>
     </b-modal>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
 import moment from "moment";
 const fb = require("../../../../firebaseConfig");
 
@@ -61,7 +43,9 @@ export default {
     };
   },
   computed: {
-    ...mapState(["logos"])
+    logos() {
+      return this.$store.getters["images/getLogos"];
+    }
   },
   methods: {
     deleteLogo(logo) {
@@ -72,8 +56,8 @@ export default {
       this.deleteDialog = false;
     },
     deleteOnConfirm() {
-      this.deleteDialog = false;
       fb.logosCollection.doc(this.toDelete.id).delete();
+      this.deleteDialog = false;
     }
   },
   filters: {
@@ -91,6 +75,9 @@ export default {
       let date = val.toDate();
       return moment(date).format("MMMM Do YYYY");
     }
+  },
+  created() {
+    this.$store.dispatch("images/setLogos");
   }
 };
 </script>
