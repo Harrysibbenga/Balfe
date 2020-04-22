@@ -5,7 +5,7 @@
     <div v-if="videos.length > 0">
       <div class="row">
         <div class="col-6 col-md-4 col-lg-2" v-for="(video, index) in videos" :key="index">
-          <img :src="video.url" class="img-fluid" />
+          <b-embed type="iframe" aspect="16by9" :src="video.url" allowfullscreen></b-embed>
           <p scope="row">{{ video.name }}</p>
           <div class="d-block">
             <p class="d-inline">Uploaded: {{ video.createdOn | formatCreation }}</p>
