@@ -34,12 +34,15 @@
       </div>
 
       <div class="col-6">
-        <h2>Manage tracks</h2>
+        <h2 class="pb-3">Manage tracks</h2>
+
+        <b-button class="btn btn-primary" @click="createTrack">+ New track</b-button>
+
         <b-form-select
           v-model="viewTrack.selected"
           :options="trackOptions"
           size="sm"
-          class="mt-3"
+          class="mt-4"
           @change="viewOption"
         >
           <template v-slot:first>
@@ -52,7 +55,7 @@
             <tr>
               <th scope="col">Name</th>
               <th scope="col">Coners</th>
-              <th scope="col">Length (m)</th>
+              <th scope="col">Length (miles)</th>
               <th scope="col">Updated</th>
               <th scope="col">Action</th>
             </tr>
@@ -61,7 +64,7 @@
             <tr>
               <td>{{ viewTrack.track.name }}</td>
               <td>{{ viewTrack.track.corners }}</td>
-              <td>{{ viewTrack.track.length }} m</td>
+              <td>{{ viewTrack.track.length }} miles</td>
               <td>{{ viewTrack.track.createdOn | formatCreation }}</td>
               <td>
                 <div class="d-inline px-1 text-dark" @click="editTrack(viewTrack.track)">Edit</div>
@@ -71,12 +74,12 @@
           </tbody>
         </table>
         <div v-else>Select a track to view or edit</div>
-        <div class="text-success" v-if="confirm == 'track'">Track has been edited</div>
+        <div class="text-success" v-if="conf == 'track'">Track has been edited</div>
       </div>
     </div>
 
     <hr class="balfe-line" />
-    <div class="text-success" v-if="confirm == 'rounds'">Round edited</div>
+    <div class="text-success" v-if="conf == 'rounds'">Round edited</div>
     <div v-if="calender.length > 0">
       <table class="table table-striped table-hover text-left">
         <thead>
@@ -104,15 +107,16 @@
     </div>
     <div v-else>Sorry no fixtures yet .......... Add some!</div>
     <!-- Models -->
-    <!-- Edit track  -->
+    <!-- Add track  -->
     <b-modal
-      v-model="editTrackDialog"
+      v-model="addTrackDialog"
       hide-header
       hide-footer
       centered
       no-close-on-backdrop
       hide-header-close
       no-close-on-esc
+      size="xl"
     >
       <b-form @submit.prevent>
         <transition name="fade">
@@ -122,8 +126,7 @@
         </transition>
 
         <div>
-          <img :src="currentTrack.image" v-if="!newImage" class="img-fluid" />
-          <img :src="track.image" v-if="newImage" class="img-fluid" />
+          <img :src="track.image" class="img-fluid" />
         </div>
 
         <b-button class="btn btn-primary" @click="addNewImage($event)" value="track">+ Image</b-button>
@@ -135,15 +138,206 @@
         >+ Select Image</b-button>
 
         <b-form-group id="name" label="Name" label-for="name" class="text-left">
-          <b-input id="name" v-model="currentTrack.name" type="text"></b-input>
+          <b-input id="name" v-model.trim="track.name" type="text"></b-input>
         </b-form-group>
 
         <b-form-group id="corners" label="Corners" label-for="corners" class="text-left">
-          <b-input id="corners" v-model.trim="currentTrack.corners" type="number"></b-input>
+          <b-input id="corners" v-model.trim="track.corners" type="number"></b-input>
         </b-form-group>
 
-        <b-form-group id="length" label="Length (m)" label-for="length" class="text-left">
-          <b-input id="length" v-model.trim="currentTrack.length" type="text"></b-input>
+        <b-form-group id="length" label="Length (miles)" label-for="length" class="text-left">
+          <b-input id="length" v-model.trim="track.length" type="text"></b-input>
+        </b-form-group>
+
+        <h5 class="pt-5">Last year results</h5>
+
+        <div class="row">
+          <b-form-group
+            id="GT3_one"
+            label="GT3 race one"
+            label-for="GT3_one"
+            class="text-left col-6"
+          >
+            <b-input id="GT3_one" v-model.trim="track.gt3_one" type="text"></b-input>
+          </b-form-group>
+          <b-form-group
+            id="GT4_one"
+            label="GT4 race one"
+            label-for="GT4_one"
+            class="text-left col-6"
+          >
+            <b-input id="GT4_one" v-model.trim="track.gt4_one" type="text"></b-input>
+          </b-form-group>
+          <b-form-group
+            id="GT3_two"
+            label="GT3 race two"
+            label-for="GT3_two"
+            class="text-left col-6"
+          >
+            <b-input id="GT3_two" v-model.trim="track.gt3_two" type="text"></b-input>
+          </b-form-group>
+          <b-form-group
+            id="GT4_two"
+            label="GT4 race two"
+            label-for="GT4_two"
+            class="text-left col-6"
+          >
+            <b-input id="GT4_two" v-model.trim="track.gt4_two" type="text"></b-input>
+          </b-form-group>
+        </div>
+
+        <h5 class="pt-5">Current timetable</h5>
+
+        <div class="row">
+          <b-form-group
+            id="fp_one"
+            label="Free practice one"
+            label-for="fp_one"
+            class="text-left col-6"
+          >
+            <b-input id="fp_one" v-model.trim="track.fp_one" type="text"></b-input>
+          </b-form-group>
+
+          <b-form-group
+            id="fp_two"
+            label="Free practice two"
+            label-for="fp_two"
+            class="text-left col-6"
+          >
+            <b-input id="fp_two" v-model.trim="track.fp_two" type="text"></b-input>
+          </b-form-group>
+
+          <b-form-group id="race_one" label="Race one" label-for="race_one" class="text-left col-6">
+            <b-input id="race_one" v-model.trim="track.race_one" type="text"></b-input>
+          </b-form-group>
+
+          <b-form-group id="race_two" label="Race two" label-for="race_two" class="text-left col-6">
+            <b-input id="race_two" v-model.trim="track.race_two" type="text"></b-input>
+          </b-form-group>
+        </div>
+        <b-form-group id="qualifying" label="Qualifying" label-for="qualifying" class="text-left">
+          <b-input id="qualifying" v-model.trim="track.qualifying" type="text"></b-input>
+        </b-form-group>
+      </b-form>
+      <div class="d-block text-right pt-3">
+        <b-button class="mr-2" @click="newTrackOnConfirm">Edit</b-button>
+        <b-button variant="primary" @click="newTrackOnCancel">Cancel</b-button>
+      </div>
+    </b-modal>
+    <!-- Add track  -->
+    <!-- Edit track  -->
+    <b-modal
+      v-model="editTrackDialog"
+      hide-header
+      hide-footer
+      centered
+      no-close-on-backdrop
+      hide-header-close
+      no-close-on-esc
+      size="xl"
+    >
+      <b-form @submit.prevent>
+        <transition name="fade">
+          <div v-if="request" class="loading">
+            <p class="text-dark">Loading...</p>
+          </div>
+        </transition>
+
+        <div class="row">
+          <img :src="currentTrack.image" v-if="!newImage" class="img-fluid mx-auto" />
+          <img :src="track.image" v-if="newImage" class="img-fluid mx-auto" />
+        </div>
+
+        <b-button class="btn btn-primary" @click="addNewImage($event)" value="track">+ Image</b-button>
+
+        <b-button
+          class="btn btn-primary ml-2"
+          @click="chooseImage($event)"
+          value="track"
+        >Select Image</b-button>
+
+        <b-form-group id="name" label="Name" label-for="name" class="text-left">
+          <b-input id="name" v-model.trim="currentTrack.name" type="text"></b-input>
+        </b-form-group>
+
+        <div class="row">
+          <b-form-group id="corners" label="Corners" label-for="corners" class="text-left col-6">
+            <b-input id="corners" v-model.trim="currentTrack.corners" type="number"></b-input>
+          </b-form-group>
+
+          <b-form-group id="length" label="Length (m)" label-for="length" class="text-left col-6">
+            <b-input id="length" v-model.trim="currentTrack.length" type="text"></b-input>
+          </b-form-group>
+        </div>
+
+        <h5 class="pt-5">Last year results</h5>
+
+        <div class="row">
+          <b-form-group
+            id="GT3_one"
+            label="GT3 race one"
+            label-for="GT3_one"
+            class="text-left col-6"
+          >
+            <b-input id="GT3_one" v-model.trim="currentTrack.gt3_one" type="text"></b-input>
+          </b-form-group>
+          <b-form-group
+            id="GT4_one"
+            label="GT4 race one"
+            label-for="GT4_one"
+            class="text-left col-6"
+          >
+            <b-input id="GT4_one" v-model.trim="currentTrack.gt4_one" type="text"></b-input>
+          </b-form-group>
+          <b-form-group
+            id="GT3_two"
+            label="GT3 race two"
+            label-for="GT3_two"
+            class="text-left col-6"
+          >
+            <b-input id="GT3_two" v-model.trim="currentTrack.gt3_two" type="text"></b-input>
+          </b-form-group>
+          <b-form-group
+            id="GT4_two"
+            label="GT4 race two"
+            label-for="GT4_two"
+            class="text-left col-6"
+          >
+            <b-input id="GT4_two" v-model.trim="currentTrack.gt4_two" type="text"></b-input>
+          </b-form-group>
+        </div>
+
+        <h5 class="pt-5">Current timetable</h5>
+
+        <div class="row">
+          <b-form-group
+            id="fp_one"
+            label="Free practice one"
+            label-for="fp_one"
+            class="text-left col-6"
+          >
+            <b-input id="fp_one" v-model.trim="currentTrack.fp_one" type="text"></b-input>
+          </b-form-group>
+
+          <b-form-group
+            id="fp_two"
+            label="Free practice two"
+            label-for="fp_two"
+            class="text-left col-6"
+          >
+            <b-input id="fp_two" v-model.trim="currentTrack.fp_two" type="text"></b-input>
+          </b-form-group>
+
+          <b-form-group id="race_one" label="Race one" label-for="race_one" class="text-left col-6">
+            <b-input id="race_one" v-model.trim="currentTrack.race_one" type="text"></b-input>
+          </b-form-group>
+
+          <b-form-group id="race_two" label="Race two" label-for="race_two" class="text-left col-6">
+            <b-input id="race_two" v-model.trim="currentTrack.race_two" type="text"></b-input>
+          </b-form-group>
+        </div>
+        <b-form-group id="qualifying" label="Qualifying" label-for="qualifying" class="text-left">
+          <b-input id="qualifying" v-model.trim="currentTrack.qualifying" type="text"></b-input>
         </b-form-group>
       </b-form>
       <div class="d-block text-right pt-3">
@@ -161,6 +355,7 @@
       no-close-on-backdrop
       hide-header-close
       no-close-on-esc
+      size="xl"
     >
       <b-form-select v-model="selectTrack.selected" :options="trackOptions" size="sm" class="mt-3">
         <template v-slot:first>
@@ -297,6 +492,7 @@ export default {
       trackToEdit: null,
       editDialog: false,
       editTrackDialog: false,
+      addTrackDialog: false,
       selectTrack: {
         selected: null,
         track: null
@@ -320,7 +516,8 @@ export default {
       userPrompt: null,
       select: null,
       imageChoice: null,
-      newImage: null
+      newImage: null,
+      conf: ""
     };
   },
   computed: {
@@ -439,6 +636,42 @@ export default {
         })
         .catch(error => alert(error.message));
     },
+    createTrack() {
+      this.addTrackDialog = true;
+    },
+    newTrackOnConfirm() {
+      fb.tracksCollection
+        .add({
+          name: this.track.name,
+          corners: this.track.corners,
+          length: this.track.length,
+          createdOn: new Date(),
+          image: this.track.image,
+          imageId: this.track.imageId,
+          gt3_one: this.track.gt3_one,
+          gt4_one: this.track.gt4_one,
+          gt3_two: this.track.gt3_two,
+          gt4_two: this.track.gt4_two,
+          fp_one: this.track.fp_one,
+          fp_two: this.track.fp_two,
+          qualifying: this.track.qualifying,
+          race_one: this.track.race_one,
+          race_two: this.track.race_two
+        })
+        .then(() => {
+          this.addTrackDialog = false;
+          this.track = {};
+          this.imageId = null;
+        })
+        .catch(err => {
+          alert(err.message);
+        });
+    },
+    newTrackOnCancel() {
+      this.track = {};
+      this.addTrackDialog = false;
+      this.imageId = null;
+    },
     editTrack(track) {
       this.trackToEdit = track;
       this.currentTrack = track;
@@ -455,7 +688,16 @@ export default {
           length: this.track.length,
           createdOn: new Date(),
           image: this.track.image,
-          imageId: this.track.imageId
+          imageId: this.track.imageId,
+          gt3_one: this.track.gt3_one,
+          gt4_one: this.track.gt4_one,
+          gt3_two: this.track.gt3_two,
+          gt4_two: this.track.gt4_two,
+          fp_one: this.track.fp_one,
+          fp_two: this.track.fp_two,
+          qualifying: this.track.qualifying,
+          race_one: this.track.race_one,
+          race_two: this.track.race_two
         })
         .then(() => {
           this.currentTrack = {};
@@ -463,6 +705,8 @@ export default {
           this.viewTrack.selected = null;
           this.trackToEdit = null;
           this.trackView = null;
+          this.imageId = null;
+          this.track = {};
           this.editConf("track");
         })
         .catch(err => {
@@ -475,14 +719,16 @@ export default {
       this.editTrackDialog = false;
       this.trackView = null;
       this.viewTrack.selected = null;
+      this.imageId = null;
     },
     deleteTrack(track) {
       fb.tracksCollection.doc(track.id).delete();
     },
     editConf(type) {
-      this.confirm = type;
-      setInterval(() => {
-        this.confirm = false;
+      this.conf = type;
+      setTimeout(() => {
+        type = "";
+        this.conf = "";
       }, 3000);
     },
     // adding a new image
