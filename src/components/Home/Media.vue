@@ -5,7 +5,7 @@
       <div class="row">
         <div
           class="col-12 col-sm-6 col-md-4 col-lg-3 p-0"
-          v-for="(content, index) in galleryContent"
+          v-for="(content, index) in paginatedData"
           :key="index"
         >
           <div v-if="content.imageId">
@@ -20,20 +20,11 @@
 
     <nav aria-label="Media results">
       <ul class="pagination justify-content-center pt-5">
-        <li class="page-item disabled">
-          <span class="page-link">Previous</span>
+        <li class="page-item">
+          <b-button class="page-link" :disabled="pageNumber == 0" @click="prevPage">Previous</b-button>
         </li>
         <li class="page-item">
-          <a class="page-link active" href="#">1</a>
-        </li>
-        <li class="page-item" aria-current="page">
-          <a href="#" class="page-link">2</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="#">3</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="#">Next</a>
+          <b-button class="page-link" :disabled="pageNumber >= pageCount -1" @click="nextPage">Next</b-button>
         </li>
       </ul>
     </nav>
@@ -42,9 +33,39 @@
 
 <script>
 export default {
+  data() {
+    return {
+      pageNumber: 0
+    };
+  },
+  props: {
+    size: {
+      type: Number,
+      required: false,
+      default: 12
+    }
+  },
   computed: {
     galleryContent() {
       return this.$store.getters["gallery/getGallery"];
+    },
+    pageCount() {
+      let l = this.galleryContent.length,
+        s = this.size;
+      return Math.ceil(l / s);
+    },
+    paginatedData() {
+      const start = this.pageNumber * this.size,
+        end = start + this.size;
+      return this.galleryContent.slice(start, end);
+    }
+  },
+  methods: {
+    nextPage() {
+      this.pageNumber++;
+    },
+    prevPage() {
+      this.pageNumber--;
     }
   },
   created() {
