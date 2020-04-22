@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-dark text-white">
+  <div class="bg-dark text-white" id="home">
     <comp-carousel class="border-bottom border-primary" />
     <comp-latest-news
       id="news-sec"
