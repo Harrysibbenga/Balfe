@@ -488,7 +488,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch("images/getImages");
+    this.$store.dispatch("images/setImages");
   }
 };
 </script>
