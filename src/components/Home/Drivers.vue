@@ -4,7 +4,7 @@
     <div class="container-fluid p-0">
       <div class="row no-gutters">
         <div class="col-lg-12">
-          <div class="row no-gutters">
+          <div class="row no-gutters" v-if="drivers.length > 0">
             <div
               class="driver-cont-container col-4 col-lg-2 view"
               v-for="(driver, index) in drivers"
@@ -20,7 +20,7 @@
             </div>
           </div>
         </div>
-        <div id="driver-sec" class="col-md-12" v-if="currentDriver">
+        <div id="driver-sec" class="col-md-12" v-if="currentDriver != null">
           <div class="row no-gutters">
             <div class="col-md-6 view">
               <img class="img-fluid" :src="currentDriver.image" />
@@ -28,22 +28,6 @@
             <div class="col-md-6">
               <div class="text-center">
                 <h3 class="name-title">{{ currentDriver.fullName }}</h3>
-              </div>
-              <div class="container-fluid">
-                <h4 class>Career Highlight</h4>
-                <ul id="career-highlight" class="list-group list-group-flush"></ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="driver-sec" class="col-md-12" v-if="currentDriver == null">
-          <div class="row no-gutters">
-            <div class="col-md-6 view">
-              <img class="img-fluid" :src="defultDriver.image" />
-            </div>
-            <div class="col-md-6">
-              <div class="text-center">
-                <h3 class="name-title">{{ defultDriver.fullName }}</h3>
               </div>
               <div class="container-fluid">
                 <h4 class>Career Highlight</h4>
@@ -67,18 +51,21 @@ export default {
   computed: {
     drivers() {
       return this.$store.getters["drivers/getDrivers"];
-    },
-    defultDriver() {
-      return this.$store.getters["drivers/getDrivers"][0];
     }
   },
   methods: {
     clickedDriver(driver) {
       this.currentDriver = driver;
+    },
+    defaultDriver() {
+      this.currentDriver = this.drivers[0];
     }
   },
-  created: function() {
+  created() {
     this.$store.dispatch("drivers/setDrivers");
+    setTimeout(() => {
+      this.defaultDriver();
+    }, 1000);
   }
 };
 </script>
