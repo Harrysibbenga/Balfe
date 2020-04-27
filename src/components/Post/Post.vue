@@ -2,9 +2,11 @@
   <div>
     <div class="container-fluid">
       <div class="row" v-if="post">
-        <img :src="post.image" class="img-fluid" />
+        <div class="col-12 text-center">
+          <img :src="post.image" class="img-fluid" />
+        </div>
       </div>
-      <h1>{{ post.title }}</h1>
+      <h1 class="text-center">{{ post.title }}</h1>
       <hr class="balfe-line" />
     </div>
     <div class="container">

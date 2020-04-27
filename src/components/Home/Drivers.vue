@@ -30,8 +30,8 @@
                 <h3 class="name-title">{{ currentDriver.fullName }}</h3>
               </div>
               <div class="container-fluid">
-                <h4 class>Career Highlight</h4>
-                <ul id="career-highlight" class="list-group list-group-flush"></ul>
+                <h4 class="px-5 pb-2">Career Highlight</h4>
+                <div class="px-5" v-html="currentDriver.career"></div>
               </div>
             </div>
           </div>

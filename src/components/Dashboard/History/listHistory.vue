@@ -121,18 +121,23 @@
       </transition>
 
       <b-form @submit.prevent>
-        <div>
+        <div class="text-center">
           <img :src="currentHistory.image" v-if="!newImage" class="img-fluid" />
           <img :src="history.image" v-if="newImage" class="img-fluid" />
         </div>
 
-        <b-button class="btn btn-primary" @click="addNewImage($event)" value="history">+ Image</b-button>
+        <b-button class="btn btn-primary mt-3" @click="addNewImage($event)" value="history">+ Image</b-button>
 
         <b-button
-          class="btn btn-primary ml-2"
+          class="btn btn-primary ml-2 mt-3"
           @click="chooseImage($event)"
           value="history"
         >+ Select Image</b-button>
+
+        <b-form-group id="date" label="Date" label-for="date" class="text-left">
+          <datepicker id="date" v-model="history.date"></datepicker>
+          <span>Current date: {{ currentHistory.date | formatDate}}</span>
+        </b-form-group>
 
         <b-form-group id="title" label="Title" label-for="title" class="text-left">
           <b-input
@@ -158,11 +163,6 @@
 
         <b-form-group id="comments" label="Comments" label-for="comments" class="text-left">
           <wysiwyg id="comments" v-model="history.comments" :value="currentHistory.comments"></wysiwyg>
-        </b-form-group>
-
-        <b-form-group id="date" label="Date" label-for="date" class="text-left">
-          <datepicker id="date" v-model="history.date"></datepicker>
-          <span>Current date: {{ currentHistory.date | formatDate}}</span>
         </b-form-group>
 
         <!-- gallery images  -->

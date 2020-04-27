@@ -154,7 +154,7 @@
         <div class="row">
           <b-form-group
             id="GT3_one"
-            label="GT3 race one"
+            label="Car #22, 720S GT3 race one"
             label-for="GT3_one"
             class="text-left col-6"
           >
@@ -162,7 +162,7 @@
           </b-form-group>
           <b-form-group
             id="GT4_one"
-            label="GT4 race one"
+            label="Car #20 570S GT4 race one"
             label-for="GT4_one"
             class="text-left col-6"
           >
@@ -170,7 +170,7 @@
           </b-form-group>
           <b-form-group
             id="GT3_two"
-            label="GT3 race two"
+            label="Car #22, 720S GT3 race two"
             label-for="GT3_two"
             class="text-left col-6"
           >
@@ -178,7 +178,7 @@
           </b-form-group>
           <b-form-group
             id="GT4_two"
-            label="GT4 race two"
+            label="Car #20 570S GT4 race two"
             label-for="GT4_two"
             class="text-left col-6"
           >
@@ -220,7 +220,7 @@
         </b-form-group>
       </b-form>
       <div class="d-block text-right pt-3">
-        <b-button class="mr-2" @click="newTrackOnConfirm">Edit</b-button>
+        <b-button class="mr-2" @click="newTrackOnConfirm">Add</b-button>
         <b-button variant="primary" @click="newTrackOnCancel">Cancel</b-button>
       </div>
     </b-modal>

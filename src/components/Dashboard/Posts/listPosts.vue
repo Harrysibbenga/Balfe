@@ -121,18 +121,23 @@
       </transition>
 
       <b-form @submit.prevent>
-        <div>
+        <div class="text-center">
           <img :src="currentPost.image" v-if="!newImage" class="img-fluid" />
           <img :src="post.image" v-if="newImage" class="img-fluid" />
         </div>
 
-        <b-button class="btn btn-primary" @click="addNewImage($event)" value="post">+ Image</b-button>
+        <b-button class="btn btn-primary mt-3" @click="addNewImage($event)" value="post">+ Image</b-button>
 
         <b-button
-          class="btn btn-primary ml-2"
+          class="btn btn-primary ml-2 mt-3"
           @click="chooseImage($event)"
           value="post"
         >+ Select Image</b-button>
+
+        <b-form-group id="date" label="Date" label-for="date" class="text-left">
+          <datepicker id="date" v-model="post.date"></datepicker>
+          <span>Current date: {{ currentPost.date | formatDate}}</span>
+        </b-form-group>
 
         <b-form-group id="title" label="Title" label-for="title" class="text-left">
           <b-input
@@ -158,11 +163,6 @@
 
         <b-form-group id="comments" label="Comments" label-for="comments" class="text-left">
           <wysiwyg id="comments" v-model="post.comments" :value="currentPost.comments"></wysiwyg>
-        </b-form-group>
-
-        <b-form-group id="date" label="Date" label-for="date" class="text-left">
-          <datepicker id="date" v-model="post.date"></datepicker>
-          <span>Current date: {{ currentPost.date | formatDate}}</span>
         </b-form-group>
 
         <!-- gallery images  -->
