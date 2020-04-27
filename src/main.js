@@ -22,17 +22,14 @@ Vue.component("datepicker", Datepicker);
 Vue.use(vuelidate);
 Vue.use(wysiwyg, {});
 
-// Fetch user 
-fb.auth.onAuthStateChanged(user => {
-  store.dispatch('admin/fetchUser', user)
-});
-
 // handle page reload
 fb.auth.onAuthStateChanged(user => {
   if (user) {
     store.commit("admin/setCurrentUser", user);
-  } else {
-    store.commit("admin/setCurrentUser", null);
+    store.dispatch('admin/fetchUser')
+    fb.usersCollection.doc(user.uid).onSnapshot(doc => {
+      store.commit("admin/setUserProfile", doc.data());
+    });
   }
 });
 

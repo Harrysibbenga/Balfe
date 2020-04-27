@@ -34,6 +34,8 @@ import Images from "@/components/Dashboard/Media/Images/index"
 import Drivers from "@/components/Dashboard/Drivers/index";
 //Calender
 import Calender from "@/components/Dashboard/Calender/index"
+// Settings 
+import Settings from "@/components/Dashboard/Settings/index"
 Vue.use(Router);
 
 const router = new Router({
@@ -138,6 +140,9 @@ const router = new Router({
               component: Logos
             }
           ]
+        }, {
+          path: "settings",
+          component: Settings
         }
       ],
       meta: {
