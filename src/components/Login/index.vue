@@ -202,8 +202,6 @@ export default {
       fb.auth
         .signInWithEmailAndPassword(this.formdata.email, this.formdata.password)
         .then(user => {
-          console.log(user);
-          console.log(user.user);
           this.$store.commit("admin/setCurrentUser", user.user);
           this.$store.dispatch("admin/fetchUser");
           this.performingRequest = false;
@@ -236,13 +234,11 @@ export default {
               this.$router.push("/dashboard");
             })
             .catch(err => {
-              console.log(err);
               this.performingRequest = false;
               this.errorMsg = err.message;
             });
         })
         .catch(err => {
-          console.log(err);
           this.performingRequest = false;
           this.errorMsg = err.message;
         });
@@ -257,7 +253,6 @@ export default {
           this.passwordForm.email = "";
         })
         .catch(err => {
-          console.log(err);
           this.performingRequest = false;
           this.errorMsg = err.message;
         });
